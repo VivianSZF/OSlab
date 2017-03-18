@@ -2,7 +2,7 @@
 #define __GAME_H__
 
 
-#include "adt/linklist.h"
+#include "include/adt/linklist.h"
 
 typedef struct{
 	int x,y,w,v;
@@ -20,21 +20,21 @@ void keyboard_event(int scan_code);
 void press_key(int scan_code);
 void release_key(int ch);
 bool query_key(int ch);
-int last_key_code(void);
+void key_operation(void);
 
-/* 定义fly链表 */
+/* 定义st链表 */
 LINKLIST_DEF(st)
-	int x, y,dx,dy,w;
+	int x,y,w,v;
 LINKLIST_DEF_FI(st)
 
 /* 主循环 */
 void main_loop(void);
 
 /* 游戏逻辑相关 */
-void create_new_letter(void);
-void update_letter_pos(void);
-bool update_keypress(void);
-
+void control_plane(int);
+void create_new_stone(void);
+void update_stone_pos(void);
+void update_bang(void);
 
 void redraw_screen(void);
 

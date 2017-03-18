@@ -1,4 +1,4 @@
-#include "include/keyboard.h"
+#include "include/common.h"
 
 static int key_code[] = {
 	0x48,0x50,0x4b,0x4d
