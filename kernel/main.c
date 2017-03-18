@@ -1,9 +1,10 @@
 #include "game.h"
 #include "irq.h"
-#include "x86/x86.h"
-#include "device/timer.h"
-#include "device/palette.h"
+#include "x86.h"
+#include "timer.h"
 #include "assert.h"
+#include "types.h"
+#include "cpu.h"
 
 void
 game_init(void) {
@@ -17,5 +18,5 @@ game_init(void) {
 	printk("game start!\n");
 	enable_interrupt();
 	main_loop();
-	assert(0); /* main_loop是死循环，永远无法返回这里 */
+	assert(0); /* main_loop是死循环，永远无法返回这�?*/
 }

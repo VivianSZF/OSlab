@@ -1,12 +1,12 @@
-#include <include/stdio.h>
-#include <include/stdarg.h>
+#include "stdio.h"
+#include "stdarg.h"
 
 void putchar(int);
 
 static void putch(int ch, int *cnt)
 {
 	putchar(ch);
-	*cnt++;
+	++*cnt;
 }
 
 int vprintk(const char *fmt, va_list ap)

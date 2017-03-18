@@ -1,9 +1,14 @@
+
+
 #ifndef JOS_INC_X86_H
 #define JOS_INC_X86_H
 
-#include <include/types.h>
+#include "types.h"
+#include "memory.h"
+#include "cpu.h"
 
 static __inline void breakpoint(void) __attribute__((always_inline));
+static __inline void hlt(void) __attribute__((always_inline));
 static __inline uint8_t inb(int port) __attribute__((always_inline));
 static __inline void insb(int port, void *addr, int cnt) __attribute__((always_inline));
 static __inline uint16_t inw(int port) __attribute__((always_inline));
@@ -39,6 +44,12 @@ static __inline void
 breakpoint(void)
 {
 	__asm __volatile("int3");
+}
+
+static __inline void
+hlt(void)
+{
+	__asm __volatile("hlt");
 }
 
 static __inline uint8_t

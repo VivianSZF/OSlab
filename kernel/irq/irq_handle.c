@@ -1,7 +1,7 @@
-#include "include/x86.h"
-#include "include/stdio.h"
-#include "include/assert.h"
-//#include "game.h"
+#include "x86.h"
+#include "stdio.h"
+#include "assert.h"
+#include "game.h"
 
 static void (*do_timer)(void);
 static void (*do_keyboard)(int);
@@ -16,7 +16,7 @@ set_keyboard_intr_handler( void (*ptr)(int) ) {
 }
 
 /* TrapFrame的定义在include/memory.h
- * 请仔细理解这段程序的含义，这些内容将在后续的实验中被反复使用。 */
+ * 请仔细理解这段程序的含义，这些内容将在后续的实验中被反复使用�?*/
 void
 irq_handle(struct TrapFrame *tf) {
 	if(tf->irq < 1000) {

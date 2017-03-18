@@ -1,21 +1,36 @@
-// Basic string routines.  Not hardware optimized, but not shabby.
+#include "common.h"
+#include "string.h"
 
-#include <inc/string.h>
+/* 注意！itoa只有一个缓冲，因此
+ * char *p = itoa(100);
+ * char *q = itoa(200);
+ * 后p和q所指内容都�?200"�?
+ */
+char *itoa(int a) {
+	static char buf[30];
+	char *p = buf + sizeof(buf) - 1;
+	do {
+		*--p = '0' + a % 10;
+	} while (a /= 10);
+	return p;
+}
 
-// Using assembly for memset/memmove
-// makes some difference on real hardware,
-// but it makes an even bigger difference on bochs.
-// Primespipe runs 3x faster this way.
-#define ASM 1
+void memcpy(void *dest, const void *src, size_t size) {
+	asm volatile ("cld; rep movsb" : : "c"(size), "S"(src), "D"(dest));
+}
 
-int
-strlen(const char *s)
-{
-	int n;
+void memset(void *dest, int data, size_t size) {
+	asm volatile ("cld; rep stosb" : : "c"(size), "a"(data), "D"(dest));
+}
 
-	for (n = 0; *s != '\0'; s++)
-		n++;
-	return n;
+size_t strlen(const char *str) {
+	int len = 0;
+	while (*str ++) len ++;
+	return len;
+}
+
+void strcpy(char *d, const char *s) {
+	memcpy(d, s, strlen(s) + 1);
 }
 
 int
@@ -28,16 +43,7 @@ strnlen(const char *s, size_t size)
 	return n;
 }
 
-char *
-strcpy(char *dst, const char *src)
-{
-	char *ret;
 
-	ret = dst;
-	while ((*dst++ = *src++) != '\0')
-		/* do nothing */;
-	return ret;
-}
 
 char *
 strncpy(char *dst, const char *src, size_t size) {
@@ -162,19 +168,7 @@ memmove(void *dst, const void *src, size_t n)
 
 #else
 
-void *
-memset(void *v, int c, size_t n)
-{
-	char *p;
-	int m;
 
-	p = v;
-	m = n;
-	while (--m >= 0)
-		*p++ = c;
-
-	return v;
-}
 
 /* no memcpy - use memmove instead */
 
@@ -201,11 +195,7 @@ memmove(void *dst, const void *src, size_t n)
 
 /* sigh - gcc emits references to this for structure assignments! */
 /* it is *not* prototyped in inc/string.h - do not use directly. */
-void *
-memcpy(void *dst, void *src, size_t n)
-{
-	return memmove(dst, src, n);
-}
+
 
 int
 memcmp(const void *v1, const void *v2, size_t n)
@@ -278,4 +268,5 @@ strtol(const char *s, char **endptr, int base)
 		*endptr = (char *) s;
 	return (neg ? -val : val);
 }
+
 

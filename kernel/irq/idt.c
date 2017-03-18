@@ -1,4 +1,5 @@
-#include "include/x86.h"
+#include "x86.h"
+#include "common.h"
 
 #define INTERRUPT_GATE_32   0xE
 #define TRAP_GATE_32        0xF
@@ -32,7 +33,7 @@ set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_
 	ptr->offset_31_16 = (offset >> 16) & 0xFFFF;
 }
 
-/* 这些函数是汇编代码 */
+/* 这些函数是汇编代�?*/
 void irq0();
 void irq1();
 void vec0();
@@ -52,23 +53,14 @@ void vec13();
 
 void irq_empty();
 
-static inline void save_idt(void *addr, uint32_t size)
-{
-	static volatile uint16_t data[3];
-	data[0] = size - 1;
-	data[1] = (uint32_t)addr;
-	data[2] = ((uint32_t)addr) >> 16;
-	asm volatile("lidt (%0)" : : "r"(data));
-}
-
 void init_idt() {
 	int i;
-	/* 为了防止系统异常终止，所有irq都有处理函数(irq_empty)。 */
+	/* 为了防止系统异常终止，所有irq都有处理函数(irq_empty)�?*/
 	for (i = 0; i < NR_IRQ; i ++) {
 		set_trap(idt + i, SEG_KERNEL_CODE, (uint32_t)irq_empty, DPL_KERNEL);
 	}
 
-	/* 设置异常的中断处理 */
+	/* 设置异常的中断处�?*/
 	set_trap(idt + 0, SEG_KERNEL_CODE, (uint32_t)vec0, DPL_KERNEL);
 	set_trap(idt + 1, SEG_KERNEL_CODE, (uint32_t)vec1, DPL_KERNEL);
 	set_trap(idt + 2, SEG_KERNEL_CODE, (uint32_t)vec2, DPL_KERNEL);
@@ -84,7 +76,7 @@ void init_idt() {
 	set_trap(idt + 12, SEG_KERNEL_CODE, (uint32_t)vec12, DPL_KERNEL);
 	set_trap(idt + 13, SEG_KERNEL_CODE, (uint32_t)vec13, DPL_KERNEL);
 
-	/* 设置外部中断的处理 */
+	/* 设置外部中断的处�?*/
 	set_intr(idt + 32, SEG_KERNEL_CODE, (uint32_t)irq0, DPL_KERNEL);
 	set_intr(idt + 33, SEG_KERNEL_CODE, (uint32_t)irq1, DPL_KERNEL);
 

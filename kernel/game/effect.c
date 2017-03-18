@@ -1,9 +1,9 @@
-#include "include/game.h"
-#include "include/adt/linklist.h"
-#include "include/video.h"
-#include "include/x86.h"
-#include "include/types.h"
-#include "include/assert.h"
+#include "game.h"
+#include "adt/linklist.h"
+#include "video.h"
+#include "x86.h"
+#include "types.h"
+#include "assert.h"
 
 LINKLIST_IMPL(st, 10000)
 
@@ -52,8 +52,8 @@ void create_new_stone(void) {
 void update_stone_pos(void) {
 	st_t it;
 	for (it = head; it != NULL; ) {
-		st_t next = it->_next;
-		it->x += it- >v; 
+		st_t next = st_next(it);
+		it->x += it->v; 
 		if (it->x + it->w > SCR_HEIGHT) {
 			miss ++; 
 			st_remove(it);
@@ -85,7 +85,7 @@ bool bang_or_not(Plane pl,st_t it){
 void update_bang(void) {
 	st_t it;
 	for (it = head; it != NULL; ) {
-		st_t next=it->next;
+		st_t next=st_next(it);
 		if(bang_or_not(pl,it)){
 			score++;
 			st_remove(it);

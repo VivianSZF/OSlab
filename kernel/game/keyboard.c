@@ -1,4 +1,4 @@
-#include "include/common.h"
+#include "common.h"
 
 static int key_code[] = {
 	0x48,0x50,0x4b,0x4d
@@ -9,7 +9,7 @@ static bool key_pressed[4];
 void init_keyboard(void){
 	int i;
 	for(i=0;i<4;i++){
-		key_pressed=FALSE;
+		key_pressed[i]=FALSE;
 	}
 }
 

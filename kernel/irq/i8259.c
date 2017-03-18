@@ -1,4 +1,4 @@
-#include "include/x86.h"
+#include "x86.h"
 
 #define IO_PIC1 0x20
 #define IO_PIC2 0xA0
@@ -7,8 +7,8 @@
 #define IRQ_OFFSET	0x20
 #define IRQ_SLAVE	2
 
-/* 初始化8259中断控制器：
- * 硬件中断IRQ从32号开始，自动发送EOI */
+/* 初始�?259中断控制器：
+ * 硬件中断IRQ�?2号开始，自动发送EOI */
 void
 init_intr(void) {
 	// modify interrupt masks

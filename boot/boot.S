@@ -1,4 +1,4 @@
-#include <include/mmu.h>
+#include "mmu.h"
 
 .set PROT_MODE_CSEG, 0x8        
 .set PROT_MODE_DSEG, 0x10               

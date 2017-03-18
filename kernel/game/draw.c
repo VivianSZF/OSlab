@@ -1,13 +1,14 @@
-#include "include/game.h"
-#include "include/string.h"
-#include "include/video.h"
+#include "game.h"
+#include "string.h"
+#include "video.h"
+#include "stdio.h"
 
 void
 redraw_screen() {
-	fly_t it;
+	st_t it;
 	prepare_buffer(); 
 
-	for (it = characters(); it != NULL; it = it->_next) {
+	for (it = get_st_head(); it != NULL; it = it->_next) {
 		draw_bomb(it->x, it->y, it->w, 6);
 	}
 	
