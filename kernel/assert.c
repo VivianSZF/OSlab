@@ -11,7 +11,7 @@ _panic(const char *file, int line, const char *fmt,...)
 	va_list ap;
 
 	if (panicstr)
-		goto dead;
+		hlt();
 	panicstr = fmt;
 
 	// Be extra sure that the machine is in as reasonable state
@@ -23,8 +23,6 @@ _panic(const char *file, int line, const char *fmt,...)
 	printk("\n");
 	va_end(ap);
 
-dead:
-	hlt();
 }
 
 /* like panic, but don't */

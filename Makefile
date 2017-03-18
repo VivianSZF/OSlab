@@ -9,7 +9,7 @@ DD      := dd
 QEMU    := qemu-system-i386
 GDB     := gdb
 
-CFLAGS := -Wall -Werror -Wfatal-errors #开启所有警�? 视警告为错误, 第一个错误结束编�?
+CFLAGS := -Wall -Wfatal-errors #开启所有警�? 视警告为错误, 第一个错误结束编�?
 CFLAGS += -MD #生成依赖文件
 CFLAGS += -std=gnu11 -m32 -c #编译标准, 目标架构, 只编�?
 CFLAGS += -I ./include #头文件搜索目�?
@@ -46,7 +46,7 @@ BOOT_O := $(BOOT_S:%.S=$(OBJ_DIR)/%.o)
 BOOT_O += $(BOOT_C:%.c=$(OBJ_DIR)/%.o)
 
 KERNEL_C := $(shell find $(KERNEL_DIR) -name "*.c")
-KERNEL_S := $(wildcard $(KERNEL_DIR)/*.S)
+KERNEL_S := $(shell find $(KERNEL_DIR) -name "*.S")
 KERNEL_O := $(KERNEL_C:%.c=$(OBJ_DIR)/%.o)
 KERNEL_O += $(KERNEL_S:%.S=$(OBJ_DIR)/%.o)
 
@@ -71,7 +71,7 @@ $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.c
 
 $(KERNEL): $(LD_SCRIPT)
 $(KERNEL): $(KERNEL_O) $(LIB_O)
-	$(LD) -m elf_i386 -T $(LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	$(LD) -m elf_i386 -e game_init -T $(LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
 	@mkdir -p $(OBJ_LIB_DIR)
