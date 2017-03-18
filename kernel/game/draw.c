@@ -8,11 +8,12 @@ redraw_screen() {
 	st_t it;
 	prepare_buffer(); 
 
-	for (it = get_st_head(); it != NULL; it = it->_next) {
+	for (it = get_st_head(); it != NULL; ) {
 		draw_bomb(it->x, it->y, it->w, 6);
+		it=st_next(it);
 	}
 	
-	draw_bomb(pl.x,pl.y,pl.w,16);
+	draw_bomb(pl.x,pl.y,pl.w,12);
 	const char *score=itoa(get_score());
 	draw_string("SCORE:",0,SCR_WIDTH - (strlen(score) + 6) * 8,1);
 	draw_string(score, 0, SCR_WIDTH - strlen(score) * 8, 1);

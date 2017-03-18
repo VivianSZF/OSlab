@@ -18,6 +18,7 @@ void press_key(int scan_code) {
 	for (i = 0; i < 4; i ++) {
 		if (key_code[i] == scan_code) {
 			key_pressed[i] = TRUE;
+			
 		}
 	}
 }

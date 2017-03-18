@@ -38,14 +38,15 @@ st_t get_st_head(void){
 void create_new_stone(void) {
 	if (head == NULL) {
 		head = st_new(); 
-	} else {
+	} 
+	else {
 		st_t now = st_new();
 		st_insert(NULL, head, now); 
 		head = now;
 	}
 	head->x = 0;
 	head->y = rand() % (SCR_WIDTH / 8 - 2) * 8 + 8;
-	head->v = (rand() % 1000 / 1000.0 + 1) / 2.0;
+	head->v = 5;//(rand() % 1000 / 1000.0 + 1) / 2.0;
 	head->w = 2;
 }
 
