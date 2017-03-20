@@ -46,8 +46,8 @@ void create_new_stone(void) {
 	}
 	head->x = 0;
 	head->y = rand() % (SCR_WIDTH / 8 - 2) * 8 + 8;
-	head->v = 5;//(rand() % 1000 / 1000.0 + 1) / 2.0;
-	head->w = 2;
+	head->v = 2;//(rand() % 1000 / 1000.0 + 1) / 2.0;
+	head->w = 4;
 }
 
 void update_stone_pos(void) {
@@ -56,7 +56,8 @@ void update_stone_pos(void) {
 		st_t next = st_next(it);
 		it->x += it->v; 
 		if (it->x + it->w > SCR_HEIGHT) {
-			miss ++; 
+			miss++; 
+			//printk("miss/////:%d\n",miss);
 			st_remove(it);
 			if (it == head) head = next; 
 			st_free(it);
@@ -75,12 +76,17 @@ bool inplane(int x,int y,Stone s){
 
 
 bool bang_or_not(Plane pl,st_t it){
-	Stone i;
+	Stone i,j;
 	i.x=it->x;
 	i.y=it->y;
 	i.w=it->w;
+	j.x=pl.x;
+	j.y=pl.y;
+	j.w=pl.w;
 	return inplane(pl.x,pl.y,i)||inplane(pl.x+pl.w,pl.y,i)
-			||inplane(pl.x,pl.y+pl.w,i)||inplane(pl.x+pl.w,pl.y+pl.w,i);
+			||inplane(pl.x,pl.y+pl.w,i)||inplane(pl.x+pl.w,pl.y+pl.w,i)
+			||inplane(i.x,i.y,j)||inplane(i.x+i.w,i.y,j)
+			||inplane(i.x,i.y+i.w,j)||inplane(i.x+i.w,i.y+i.w,j);
 }
 
 void update_bang(void) {

@@ -31,9 +31,9 @@ void main_loop(void) {
 	bool redraw;
 
 	pl.x=100;
-	pl.y=160;
+	pl.y=150;
 	pl.w=10;
-	pl.v=15;
+	pl.v=10;
 	
 	while (TRUE) {
 	
@@ -58,7 +58,7 @@ void main_loop(void) {
 				redraw = TRUE;
 			}
 		
-			if (now % (HZ / 2) == 0) {
+			if (now % (HZ/2) == 0) {
 				int now_fps = num_draw * 2 + 1;
 				if (now_fps > FPS) now_fps = FPS;
 				set_fps(now_fps);

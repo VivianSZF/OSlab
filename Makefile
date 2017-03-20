@@ -11,7 +11,7 @@ GDB     := gdb
 
 CFLAGS := -Wall -Wfatal-errors #开启所有警�? 视警告为错误, 第一个错误结束编�?
 CFLAGS += -MD #生成依赖文件
-CFLAGS += -std=gnu11 -m32 -c #编译标准, 目标架构, 只编�?
+CFLAGS += -std=gnu11 -m32 -c -fno-stack-protector#编译标准, 目标架构, 只编�?
 CFLAGS += -I ./include #头文件搜索目�?
 CFLAGS += -O0 #不开优化, 方便调试
 CFLAGS += -fno-builtin #禁止内置函数
