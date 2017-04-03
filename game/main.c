@@ -6,6 +6,11 @@
 #include "types.h"
 #include "cpu.h"
 
+extern void init_serial();
+extern void init_timer();
+extern void init_idt();
+extern void init_intr();
+
 void
 game_init(void) {
 	init_serial();

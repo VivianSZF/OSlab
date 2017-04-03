@@ -2,6 +2,39 @@
 #include "string.h"
 #include "video.h"
 #include "stdio.h"
+#include "font.h"
+#include "assert.h"
+
+
+static inline void draw_character(char ch, int x, int y, int color) {
+	int i, j;
+	assert((ch & 0x80) == 0);
+	char *p = font8x8_basic[(int)ch];
+	for (i = 0; i < 8; i ++) 
+		for (j = 0; j < 8; j ++) 
+			if ((p[i] >> j) & 1)
+				draw_pixel(x + i, y + j, color);
+}
+
+void draw_string(const char *str, int x, int y, int color) {
+	while (*str) {
+		draw_character(*str ++, x, y, color);
+		if (y + 8 >= SCR_WIDTH) {
+			x += 8; y = 0;
+		} else {
+			y += 8;
+		}
+	}
+}
+
+void draw_bomb(int x,int y,int w,int color){
+	int i,j;
+	for(i=0;i<w;i++){
+		for(j=0;j<w;j++){
+			draw_pixel(x+i,y+j,color);
+		}
+	}
+}
 
 void
 redraw_screen() {
