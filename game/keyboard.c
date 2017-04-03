@@ -44,6 +44,4 @@ void key_operation(void){
 	}
 }
 
-void keyboard_event(int code) {
-	press_key(code);
-}
+

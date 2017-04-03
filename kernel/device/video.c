@@ -22,6 +22,12 @@ static uint8_t vbuf[SCR_SIZE];
 static uint8_t vref[SCR_SIZE];
 #endif
 
+void init_video(void)
+{
+	memset(vbuf, 0, SCR_SIZE);
+	memset(vref, 0, SCR_SIZE);
+}
+
 void prepare_buffer(void) {
 #ifdef PARTIAL_UPDATE
 	memcpy(vref, vbuf, SCR_SIZE);
@@ -48,3 +54,7 @@ void display_buffer(void) {
 #endif
 }
 
+void sys_pr(void *src)
+{
+    asm volatile ("cld; rep movsl" : : "c"(SCR_SIZE / 4), "S"(src), "D"(vmem));
+}

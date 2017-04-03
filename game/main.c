@@ -13,12 +13,6 @@ extern void init_intr();
 
 void
 game_init(void) {
-	init_serial();
-	init_timer();
-	init_idt();
-	init_intr();
-	set_timer_intr_handler(timer_event);
-	set_keyboard_intr_handler(keyboard_event);
 
 	printk("game start!\n");
 	enable_interrupt();

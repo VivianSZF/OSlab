@@ -3,17 +3,13 @@
 #include "string.h"
 #include "timer.h"
 #include "assert.h"
+#include "keyboard.h"
 
 #define FPS 30
 #define CREATE_NEW_STONE 1
 #define UPDATE_STONE_POS 30
 #define UPDATE_BANG 30
 
-volatile int tick = 0;
-       
-void timer_event(void) {
-	tick ++;
-}
 
 static int real_fps;
 void set_fps(int value) {
@@ -26,7 +22,8 @@ int get_fps() {
 
 extern void key_operation();
 void main_loop(void) {
-	int now = 0,target;
+	int now = sys_time();
+	int target;
 	int num_draw = 0;
 	bool redraw;
 
@@ -38,10 +35,13 @@ void main_loop(void) {
 	while (TRUE) {
 	
 		key_operation();
-		target = tick; 
+		target = sys_time(); 
 		redraw = FALSE;
 		while (now < target) { 
-
+			int code=sys_readkey();
+			if(code!=-1){
+				press_key(code);
+			}
 			if (now % (HZ / CREATE_NEW_STONE) == 0) {
 				create_new_stone();
 			} 
