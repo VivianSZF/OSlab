@@ -1,5 +1,7 @@
 obj/game/effect.o: game/effect.c /usr/include/stdc-predef.h \
- include/game.h include/types.h include/adt/linklist.h include/assert.h \
- include/stdio.h include/stdarg.h include/adt/linklist.h include/video.h \
- include/const.h include/assert.h include/x86.h include/memory.h \
- include/cpu.h include/common.h include/types.h game/assert.h
+ game/include/game.h game/include/types.h game/include/adt/linklist.h \
+ game/include/assert.h game/include/stdio.h game/include/stdarg.h \
+ game/include/adt/linklist.h game/include/video.h game/include/const.h \
+ game/include/assert.h game/include/x86.h game/include/memory.h \
+ game/include/cpu.h game/include/common.h game/include/types.h \
+ game/assert.h

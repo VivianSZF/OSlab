@@ -1,2 +1,2 @@
 obj/kernel/printk.o: kernel/printk.c /usr/include/stdc-predef.h \
- include/stdio.h include/stdarg.h include/stdarg.h
+ kernel/include/stdio.h kernel/include/stdarg.h kernel/include/stdarg.h

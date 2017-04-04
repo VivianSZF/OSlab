@@ -13,7 +13,7 @@ GDB     := gdb
 CFLAGS := -Wall -Wfatal-errors #开启所有警�? 视警告为错误, 第一个错误结束编�?
 CFLAGS += -MD #生成依赖文件
 CFLAGS += -std=gnu11 -m32 -c -fno-stack-protector#编译标准, 目标架构, 只编�?
-CFLAGS += -I ./include #头文件搜索目�?
+#CFLAGS += -I ./include #头文件搜索目�?
 CFLAGS += -O0 #不开优化, 方便调试
 CFLAGS += -fno-builtin #禁止内置函数
 CFLAGS += -ggdb3 #GDB调试信息
@@ -37,6 +37,10 @@ OBJ_LIB_DIR    := $(OBJ_DIR)/$(LIB_DIR)
 OBJ_BOOT_DIR   := $(OBJ_DIR)/$(BOOT_DIR)
 OBJ_KERNEL_DIR := $(OBJ_DIR)/$(KERNEL_DIR)
 OBJ_GAME_DIR   := $(OBJ_DIR)/$(GAME_DIR)
+INC_LIB_DIR    := $(LIB_DIR)/include
+INC_BOOT_DIR   := $(BOOT_DIR)/include
+INC_KERNEL_DIR := $(KERNEL_DIR)/include
+INC_GAME_DIR   := $(GAME_DIR)/include
 
 LD_SCRIPT := $(shell find $(KERNEL_DIR) -name "*.ld")
 
@@ -70,11 +74,11 @@ $(BOOT): $(BOOT_O)
 
 $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.S
 	@mkdir -p $(OBJ_BOOT_DIR)
-	$(CC) $(CFLAGS) -Os $< -o $@
+	$(CC) $(CFLAGS) -I$(INC_BOOT_DIR) -Os $< -o $@
 
 $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.c
 	@mkdir -p $(OBJ_BOOT_DIR)
-	$(CC) $(CFLAGS) -Os $< -o $@
+	$(CC) $(CFLAGS) -I$(INC_BOOT_DIR) -Os $< -o $@
 
 $(KERNEL): $(LD_SCRIPT)
 $(KERNEL): $(KERNEL_O) $(LIB_O)
@@ -82,18 +86,18 @@ $(KERNEL): $(KERNEL_O) $(LIB_O)
 
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
 	@mkdir -p $(OBJ_LIB_DIR)
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -I$(INC_LIB_DIR) $< -o $@
 
 $(OBJ_KERNEL_DIR)/%.o: $(KERNEL_DIR)/%.[cS]
 	mkdir -p $(OBJ_DIR)/$(dir $<)
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -I$(INC_KERNEL_DIR) $< -o $@
 
 $(GAME): $(GAME_O) $(LIB_O)
 	$(LD) -e game_init -Ttext=0x8048000 -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
 
 $(OBJ_GAME_DIR)/%.o : $(GAME_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)/$(dir $<)
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -I$(INC_GAME_DIR) $< -o $@
 
 DEPS := $(shell find -name "*.d")
 -include $(DEPS)

@@ -1,1 +1,2 @@
-obj/boot/boot.o: boot/boot.S /usr/include/stdc-predef.h include/mmu.h
+obj/boot/boot.o: boot/boot.S /usr/include/stdc-predef.h \
+ boot/include/mmu.h

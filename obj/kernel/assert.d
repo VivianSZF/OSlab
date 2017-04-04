@@ -1,4 +1,5 @@
 obj/kernel/assert.o: kernel/assert.c /usr/include/stdc-predef.h \
- include/stdio.h include/stdarg.h include/string.h include/common.h \
- include/types.h include/assert.h include/stdio.h include/const.h \
- include/assert.h include/x86.h include/memory.h include/cpu.h
+ kernel/include/stdio.h kernel/include/stdarg.h kernel/include/string.h \
+ kernel/include/common.h kernel/include/types.h kernel/include/assert.h \
+ kernel/include/stdio.h kernel/include/const.h kernel/include/assert.h \
+ kernel/include/x86.h kernel/include/memory.h kernel/include/cpu.h

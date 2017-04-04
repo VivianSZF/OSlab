@@ -1,5 +1,7 @@
-obj/game/main.o: game/main.c /usr/include/stdc-predef.h include/game.h \
- include/types.h include/adt/linklist.h include/assert.h include/stdio.h \
- include/stdarg.h include/irq.h include/x86.h include/memory.h \
- include/cpu.h include/common.h include/assert.h include/const.h \
- include/timer.h game/assert.h include/types.h include/cpu.h
+obj/game/main.o: game/main.c /usr/include/stdc-predef.h \
+ game/include/game.h game/include/types.h game/include/adt/linklist.h \
+ game/include/assert.h game/include/stdio.h game/include/stdarg.h \
+ game/include/irq.h game/include/x86.h game/include/memory.h \
+ game/include/cpu.h game/include/common.h game/include/assert.h \
+ game/include/const.h game/include/timer.h game/assert.h \
+ game/include/types.h game/include/cpu.h

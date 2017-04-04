@@ -1,5 +1,6 @@
-obj/game/draw.o: game/draw.c /usr/include/stdc-predef.h include/game.h \
- include/types.h include/adt/linklist.h include/assert.h include/stdio.h \
- include/stdarg.h include/string.h include/common.h include/assert.h \
- include/const.h include/video.h include/stdio.h include/font.h \
- game/assert.h
+obj/game/draw.o: game/draw.c /usr/include/stdc-predef.h \
+ game/include/game.h game/include/types.h game/include/adt/linklist.h \
+ game/include/assert.h game/include/stdio.h game/include/stdarg.h \
+ game/include/string.h game/include/common.h game/include/assert.h \
+ game/include/const.h game/include/video.h game/include/stdio.h \
+ game/include/font.h game/assert.h

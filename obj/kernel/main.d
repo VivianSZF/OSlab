@@ -1,5 +1,7 @@
 obj/kernel/main.o: kernel/main.c /usr/include/stdc-predef.h \
- include/stdio.h include/stdarg.h include/timer.h include/video.h \
- include/types.h include/const.h include/assert.h include/stdio.h \
- include/keyboard.h include/serial.h include/irq.h include/x86.h \
- include/memory.h include/cpu.h include/common.h include/assert.h
+ kernel/include/stdio.h kernel/include/stdarg.h kernel/include/timer.h \
+ kernel/include/video.h kernel/include/types.h kernel/include/const.h \
+ kernel/include/assert.h kernel/include/stdio.h kernel/include/keyboard.h \
+ kernel/include/serial.h kernel/include/irq.h kernel/include/x86.h \
+ kernel/include/memory.h kernel/include/cpu.h kernel/include/common.h \
+ kernel/include/assert.h

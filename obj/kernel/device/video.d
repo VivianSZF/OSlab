@@ -1,5 +1,6 @@
 obj/kernel/device/video.o: kernel/device/video.c \
- /usr/include/stdc-predef.h include/types.h include/string.h \
- include/common.h include/types.h include/assert.h include/stdio.h \
- include/stdarg.h include/const.h include/video.h include/font.h \
- include/assert.h
+ /usr/include/stdc-predef.h kernel/include/types.h \
+ kernel/include/string.h kernel/include/common.h kernel/include/types.h \
+ kernel/include/assert.h kernel/include/stdio.h kernel/include/stdarg.h \
+ kernel/include/const.h kernel/include/video.h kernel/include/font.h \
+ kernel/include/assert.h

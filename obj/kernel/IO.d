@@ -1,2 +1,2 @@
-obj/kernel/IO.o: kernel/IO.c /usr/include/stdc-predef.h include/stdio.h \
- include/stdarg.h include/serial.h
+obj/kernel/IO.o: kernel/IO.c /usr/include/stdc-predef.h \
+ kernel/include/stdio.h kernel/include/stdarg.h kernel/include/serial.h

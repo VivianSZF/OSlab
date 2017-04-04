@@ -1,3 +1,3 @@
 obj/game/keyboard.o: game/keyboard.c /usr/include/stdc-predef.h \
- include/common.h include/types.h include/assert.h include/stdio.h \
- include/stdarg.h include/const.h
+ game/include/common.h game/include/types.h game/include/assert.h \
+ game/include/stdio.h game/include/stdarg.h game/include/const.h
