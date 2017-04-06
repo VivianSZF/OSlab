@@ -1,9 +1,7 @@
 #ifndef __SYSCALL_H__
 #define __SYSCALL_H__
 
-#include "memory.h"
-
-void do_syscall(struct TrapFrame*);
+int syscall(int, ...);
 
 #define SYS_printf 1
 #define SYS_time 2

@@ -5,6 +5,7 @@
 #include "assert.h"
 #include "keyboard.h"
 
+#define HZ 100
 #define FPS 30
 #define CREATE_NEW_STONE 1
 #define UPDATE_STONE_POS 30
@@ -22,7 +23,7 @@ int get_fps() {
 
 extern void key_operation();
 void main_loop(void) {
-	int now = sys_time();
+	int now = systime();
 	int target;
 	int num_draw = 0;
 	bool redraw;
@@ -35,10 +36,10 @@ void main_loop(void) {
 	while (TRUE) {
 	
 		key_operation();
-		target = sys_time(); 
+		target = systime(); 
 		redraw = FALSE;
 		while (now < target) { 
-			int code=sys_readkey();
+			int code=sysreadkey();
 			if(code!=-1){
 				press_key(code);
 			}

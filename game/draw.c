@@ -39,8 +39,7 @@ void draw_bomb(int x,int y,int w,int color){
 void
 redraw_screen() {
 	st_t it;
-	prepare_buffer(); 
-
+	sysclean(); 
 	for (it = get_st_head(); it != NULL; ) {
 		draw_bomb(it->x, it->y, it->w, 6);
 		it=st_next(it);
@@ -57,7 +56,6 @@ redraw_screen() {
 	//printk("miss:%s\n",miss);
 	draw_string(itoa(get_fps()), 0, 0, 14);
 	draw_string("FPS", 0, strlen(itoa(get_fps())) * 8, 14);
-
-	display_buffer();
+	syspr();
 }
 

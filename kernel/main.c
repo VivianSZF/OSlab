@@ -42,7 +42,7 @@ int main()
 	set_timer_intr_handler(timer_event);
 	set_keyboard_intr_handler(keyboard_event);
 
-	enable_interrupt();
+	//enable_interrupt();
 	while(1);
 
 	return 0;

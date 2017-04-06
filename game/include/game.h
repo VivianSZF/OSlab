@@ -50,4 +50,5 @@ int get_fps(void);
 int rand(void);
 void srand(int seed);
 
+int sysreadkey(void);
 #endif
