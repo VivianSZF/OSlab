@@ -6,15 +6,15 @@
 #include "irq.h"
 #include "x86.h"
 #include "assert.h"
-
+#include "pmap.h"
+#include "pcb.h"
 
 static int tick = 0;
-static int last_code = -1;
-
-void timer_event(void)
+void timer_event()
 {
 	tick++;
 }
+static int last_code = -1;
 void keyboard_event(int code)
 {
 	last_code = code;
@@ -32,18 +32,18 @@ int sys_readkey(void)
 
 int main()
 {
-
+	page_init();
+	init_segment();
+	init_pcb();
 	init_serial();
 	init_video();
 	init_timer();
 	init_idt();
 	init_intr();
-
 	set_timer_intr_handler(timer_event);
 	set_keyboard_intr_handler(keyboard_event);
-
-	//enable_interrupt();
+	PCB* p=pcb_new();
+	to_user(p);
 	while(1);
-
 	return 0;
 }

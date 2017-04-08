@@ -1,8 +1,10 @@
 #include "mmu.h"
 #include "x86.h"
 #include "common.h"
-#include "process.h"
+#include "pcb.h"
 #include "pmap.h"
+
+
 
 //refer to PA.......
 static Segdesc gdt[NR_SEGMENTS];
@@ -28,7 +30,7 @@ static TSS tss;
 
 inline static void
 set_tss(Segdesc *ptr) {
-	tss.ss0 = SELECTOR_KERNEL(SEG_KERNEL_DATA);
+	tss.ss0 = KSEL(SEG_KERNEL_DATA);
 	tss.esp0 = KSTACKTOP;
 	uint32_t base = (uint32_t)&tss;
 	uint32_t limit = sizeof(TSS) - 1;
@@ -47,8 +49,7 @@ set_tss(Segdesc *ptr) {
 	ptr->base_31_24  = base >> 24;
 }
 
-
-void load_gdt(void *addr, uint32_t size)
+void write_gdtr(void *addr, uint32_t size)
 {
 	static volatile uint16_t data[3];
 	data[0] = size - 1;
@@ -64,13 +65,12 @@ init_segment(void) {
 	set_segment(&gdt[SEG_KERNEL_DATA], DPL_KERNEL, STA_W );
 	set_segment(&gdt[SEG_USER_CODE], DPL_USER, STA_X | STA_R);
 	set_segment(&gdt[SEG_USER_DATA], DPL_USER, STA_W);
-
-	load_gdt(gdt, sizeof(gdt));
+	write_gdtr(gdt, sizeof(gdt));
 	set_tss(&gdt[SEG_TSS]);
-	load_tr(SELECTOR_USER(SEG_TSS));
+	load_tr(USEL(SEG_TSS));
 }
 
-void enter_user_space(PCB *p)
+void to_user(PCB *p)
 {
 	lcr3(PADDR(p->pgdir));
 	asm volatile("mov %0, %%ds" : : "r"(p->tf.ds));

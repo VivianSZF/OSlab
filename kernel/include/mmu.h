@@ -197,14 +197,14 @@ typedef struct {
 
 #define DPL_KERNEL              0
 #define DPL_USER                3
-#define NR_SEGMENTS             3
+#define NR_SEGMENTS             7
 #define SEG_KERNEL_CODE         1 
 #define SEG_KERNEL_DATA         2
 #define SEG_USER_CODE           3
 #define SEG_USER_DATA           4
 #define SEG_TSS                 5
-#define SELECTOR_KERNEL(s)      ((s << 3) | DPL_KERNEL)
-#define SELECTOR_USER(s)        ((s << 3) | DPL_USER)
+#define KSEL(s)      ((s << 3) | DPL_KERNEL)
+#define USEL(s)      ((s << 3) | DPL_USER)
 
 
 // Application segment type bits

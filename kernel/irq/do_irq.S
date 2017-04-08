@@ -1,6 +1,7 @@
 # 中断和异常处理函数的入口
 # 中断处理函数会在IDT中为相应的中�?异常设置处理程序
 # 中断/异常的行为参见i386手册
+#include "mmu.h"
 .globl vec0; vec0: pushl $0;pushl $0; jmp asm_do_irq
 .globl vec1; vec1: pushl $0;pushl $1; jmp asm_do_irq
 .globl vec2; vec2: pushl $0;pushl $2; jmp asm_do_irq
@@ -25,12 +26,22 @@
 .globl asm_do_irq
 .extern irq_handle
 asm_do_irq:
+	pushl %ds
+  	pushl %es
+  	pushl %fs
+  	pushl %gs
 	pushal
-
+	movw $KSEL(SEG_KERNEL_DATA), %ax
+  	movw %ax, %ds
+  	movw %ax, %es
 	pushl %esp			# ???
 	call irq_handle
 	addl $4, %esp
 
 	popal
-	addl $4, %esp
+	popl %gs
+  	popl %fs
+  	popl %es
+  	popl %ds
+	addl $8, %esp
 	iret
