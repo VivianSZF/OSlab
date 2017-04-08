@@ -9,8 +9,7 @@
 
 extern char bootstacktop[], bootstack[];
 
-extern struct Page *pages;
-extern size_t npages;
+extern struct Page pages[];
 
 extern pde_t *kern_pgdir;
 
@@ -33,7 +32,7 @@ _paddr(const char *file, int line, void *kva)
 /* This macro takes a physical address and returns the corresponding kernel
  * virtual address.  It panics if you pass an invalid physical address. */
 #define KADDR(pa) _kaddr(__FILE__, __LINE__, pa)
-
+#define npages (PHYMEM / PGSIZE)
 static inline void*
 _kaddr(const char *file, int line, physaddr_t pa)
 {

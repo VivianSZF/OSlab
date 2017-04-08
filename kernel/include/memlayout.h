@@ -79,21 +79,22 @@
 
 
 // All physical memory mapped at this address
-#define	KERNBASE	0xF0000000
-
+#define	KERNBASE	0xc0000000
+#define PHYMEM     (128*1024*1024)
 // At IOPHYSMEM (640K) there is a 384K hole for I/O.  From the kernel,
 // IOPHYSMEM can be addressed at KERNBASE + IOPHYSMEM.  The hole ends
 // at physical address EXTPHYSMEM.
 #define IOPHYSMEM	0x0A0000
 #define EXTPHYSMEM	0x100000
-
+//#define VMEM_ADDR  ((uint8_t*)0xA0000)
 // Virtual page table.  Entry PDX[VPT] in the PD contains a pointer to
 // the page directory itself, thereby turning the PD into a page table,
 // which maps all the PTEs containing the page mappings for the entire
 // virtual address space into that 4 Meg region starting at VPT.
 #define VPT		(KERNBASE - PTSIZE)
-#define KSTACKTOP	VPT
+#define KSTACKTOP	KERNBASE
 #define KSTKSIZE	(8*PGSIZE)   		// size of a kernel stack
+#define KSTKG             (8*PGSIZE)
 #define ULIM		(KSTACKTOP - PTSIZE) 
 
 /*
@@ -150,7 +151,7 @@
  */
 typedef uint32_t pte_t;
 typedef uint32_t pde_t;
-
+pde_t entry_pgdir[NPDENTRIES];
 extern volatile pte_t vpt[];     // VA of "virtual page table"
 extern volatile pde_t vpd[];     // VA of current page directory
 
