@@ -7,7 +7,7 @@
 #include "memlayout.h"
 #include "assert.h"
 
-extern char bootstacktop[], bootstack[];
+extern char bootstack[];
 
 extern struct Page pages[];
 

@@ -33,8 +33,10 @@ int sys_readkey(void)
 int main()
 {
 	page_init();
+	//printk("here");
 	init_segment();
 	init_pcb();
+	//printk("here");
 	init_serial();
 	init_video();
 	init_timer();
@@ -42,8 +44,10 @@ int main()
 	init_intr();
 	set_timer_intr_handler(timer_event);
 	set_keyboard_intr_handler(keyboard_event);
-	PCB* p=pcb_new();
-	to_user(p);
+	//printk("here");
+	//PCB* p=pcb_new();
+	//printk("er are here");
+	to_user(pcb_new());
 	while(1);
 	return 0;
 }

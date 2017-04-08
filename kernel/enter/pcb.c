@@ -9,6 +9,7 @@
 
 PCB pcb[MAXN_PCB];
 PCB *pcb_free_list;
+
 #define SECT_SIZE 512
 #define GAME_OFFSET (400 * SECT_SIZE)
 static uint8_t elfs[4096];
@@ -104,7 +105,7 @@ PCB* pcb_new()
 		memset((void*)(ph->p_va+ph->p_filesz), 0, ph->p_memsz-ph->p_filesz);
 	}
 	p->tf.eip = elf -> e_entry;
-	mm_malloc(pcb->pgdir, USTACKTOP - KSTKSIZE, KSTKSIZE);
+	mm_malloc(p->pgdir, USTACKTOP - KSTKSIZE, KSTKSIZE);
 	lcr3(PADDR(kern_pgdir));
 	return p;
 }

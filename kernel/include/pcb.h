@@ -12,11 +12,11 @@ typedef struct ProcessControlBlock {
 	struct TrapFrame tf;
 	pde_t *pgdir;
 	struct ProcessControlBlock *pcbo;
-	uint8_t kstack[KSTACK_SIZE];
+	//uint8_t kstack[KSTACK_SIZE];
 } PCB;
 
 void init_pcb(void);
-PCB* pcb_create(void);
+PCB* pcb_new(void);
 void loader(PCB*);
 
 #endif

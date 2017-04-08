@@ -94,7 +94,7 @@
 #define VPT		(KERNBASE - PTSIZE)
 #define KSTACKTOP	KERNBASE
 #define KSTKSIZE	(8*PGSIZE)   		// size of a kernel stack
-#define KSTKG             (8*PGSIZE)
+
 #define ULIM		(KSTACKTOP - PTSIZE) 
 
 /*

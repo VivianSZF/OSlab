@@ -40,7 +40,7 @@ static struct Page *page_free_list;	// Free list of physical pages
 static pde_t kpgdir[NPDENTRIES];
 
 __attribute__((__aligned__(PGSIZE)))
-static pte_t kpgtable[npages];
+static pte_t kpgtable[PHYMEM/PGSIZE];
 
 void
 page_init(void)

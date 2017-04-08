@@ -6,6 +6,7 @@ GAME   := game.bin
 CC      := gcc
 LD      := ld
 OBJCOPY := objcopy
+OBJDUMP := objdump
 DD      := dd
 QEMU    := qemu-system-i386
 GDB     := gdb
@@ -64,7 +65,7 @@ $(IMAGE): $(BOOT) $(KERNEL) $(GAME)
 	@$(DD) if=/dev/zero of=$(IMAGE) count=10000         > /dev/null # 准备磁盘文件
 	@$(DD) if=$(BOOT) of=$(IMAGE) conv=notrunc          > /dev/null # 填充 boot loader
 	@$(DD) if=$(KERNEL) of=$(IMAGE) seek=1 conv=notrunc > /dev/null # 填充 kernel, 跨过 mbr
-	@$(DD) if=$(GAME) of=$(IMAGE) seek=1001 conv=notrunc > /dev/null # fill the game
+	@$(DD) if=$(GAME) of=$(IMAGE) seek=401 conv=notrunc > /dev/null # fill the game
 
 $(BOOT): $(BOOT_O)
 	$(LD) -e start -Ttext=0x7C00 -m elf_i386 -nostdlib -o $@.out $^
@@ -80,11 +81,12 @@ $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.S
 $(OBJ_BOOT_DIR)/%.o: $(BOOT_DIR)/%.c
 	@mkdir -p $(OBJ_BOOT_DIR)
 	$(CC) $(CFLAGS) -I$(INC_BOOT_DIR) -Os $< -o $@
-
+KERNEL_S :=kernel.S
 $(KERNEL): $(LD_SCRIPT)
 $(KERNEL): $(KERNEL_O) $(LIB_O)
 	$(LD) -m elf_i386 -T $(LD_SCRIPT) -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
-
+	perl kernel/loadkern.pl $@
+	$(OBJDUMP) -S $(KERNEL) > $(KERNEL_S)
 $(OBJ_LIB_DIR)/%.o : $(LIB_DIR)/%.c
 	@mkdir -p $(OBJ_LIB_DIR)
 	$(CC) $(CFLAGS) -I$(INC_LIB_DIR) $< -o $@
@@ -93,8 +95,10 @@ $(OBJ_KERNEL_DIR)/%.o: $(KERNEL_DIR)/%.[cS]
 	mkdir -p $(OBJ_DIR)/$(dir $<)
 	$(CC) $(CFLAGS) -I$(INC_KERNEL_DIR) $< -o $@
 
+GAME_S := game.S
 $(GAME): $(GAME_O) $(LIB_O)
-	$(LD) -e game_init -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	$(LD) -e game_init -Ttext=0x8048000 -m elf_i386 -nostdlib -o $@ $^ $(shell $(CC) $(CFLAGS) -print-libgcc-file-name)
+	$(OBJDUMP) -S $(GAME) > $(GAME_S)
 
 $(OBJ_GAME_DIR)/%.o : $(GAME_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)/$(dir $<)
@@ -124,7 +128,8 @@ clean:
 	@rm -rf $(KERNEL)  2> /dev/null
 	@rm -rf $(IMAGE)   2> /dev/null
 	@rm -rf $(GAME)    2> /dev/null
-
+	@rm -rf $(KERNEL_S) 2> /dev/null
+	@rm -rf $(GAME_S)   2> /dev/null
 submit: clean
 	cd .. && tar cvj $(shell pwd | grep -o '[^/]*$$') > 151180115.tar.bz2
 	
