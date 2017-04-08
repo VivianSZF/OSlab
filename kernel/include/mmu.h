@@ -149,7 +149,7 @@
 #include "types.h"
 
 // Segment Descriptors
-struct Segdesc {
+/*struct Segdesc {
 	unsigned sd_lim_15_0 : 16;  // Low bits of segment limit
 	unsigned sd_base_15_0 : 16; // Low bits of segment base address
 	unsigned sd_base_23_16 : 8; // Middle bits of segment base address
@@ -163,7 +163,22 @@ struct Segdesc {
 	unsigned sd_db : 1;         // 0 = 16-bit segment, 1 = 32-bit segment
 	unsigned sd_g : 1;          // Granularity: limit scaled by 4K when set
 	unsigned sd_base_31_24 : 8; // High bits of segment base address
-};
+};*/
+typedef struct {
+	uint32_t limit_15_0          : 16;
+	uint32_t base_15_0           : 16;
+	uint32_t base_23_16          : 8;
+	uint32_t type                : 4;
+	uint32_t segment_type        : 1;
+	uint32_t privilege_level     : 2;
+	uint32_t present             : 1;
+	uint32_t limit_19_16         : 4;
+	uint32_t soft_use            : 1;
+	uint32_t operation_size      : 1;
+	uint32_t pad0                : 1;
+	uint32_t granularity         : 1;
+	uint32_t base_31_24          : 8;
+}Segdesc;
 // Null segment
 #define SEG_NULL	(struct Segdesc){ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 // Segment that is loadable but faults when used
@@ -179,6 +194,18 @@ struct Segdesc {
     (unsigned) (base) >> 24 }
 
 #endif /* !__ASSEMBLER__ */
+
+#define DPL_KERNEL              0
+#define DPL_USER                3
+#define NR_SEGMENTS             3
+#define SEG_KERNEL_CODE         1 
+#define SEG_KERNEL_DATA         2
+#define SEG_USER_CODE           3
+#define SEG_USER_DATA           4
+#define SEG_TSS                 5
+#define SELECTOR_KERNEL(s)      ((s << 3) | DPL_KERNEL)
+#define SELECTOR_USER(s)        ((s << 3) | DPL_USER)
+
 
 // Application segment type bits
 #define STA_X		0x8	    // Executable segment
@@ -252,8 +279,29 @@ struct Taskstate {
 	uint16_t ts_iomb;	// I/O map base address
 };
 
+typedef struct {
+	uint32_t old;         
+	uint32_t esp0;         
+	uint32_t ss0;          
+	char t[88];
+}TSS;
+
+struct TrapFrame {
+	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;
+	uint32_t gs, fs, es, ds;
+	int32_t irq;
+	uint32_t error_code;
+	uint32_t eip;
+	uint16_t cs;
+	uint16_t padding3;
+	uint32_t eflags;
+	uint32_t esp;
+	uint16_t ss;
+	uint16_t padding4;
+};
+
 // Gate descriptors for interrupts and traps
-struct Gatedesc {
+/*struct Gatedesc {
 	unsigned gd_off_15_0 : 16;   // low 16 bits of offset in segment
 	unsigned gd_sel : 16;        // segment selector
 	unsigned gd_args : 5;        // # args, 0 for interrupt/trap gates
@@ -263,6 +311,17 @@ struct Gatedesc {
 	unsigned gd_dpl : 2;         // descriptor(meaning new) privilege level
 	unsigned gd_p : 1;           // Present
 	unsigned gd_off_31_16 : 16;  // high bits of offset in segment
+};*/
+
+struct Gatedesc {
+	uint32_t offset_15_0      : 16;//low 16bit of offset in segment
+	uint32_t segment          : 16;//segment selector
+	uint32_t pad0             : 8;//low 5#args, 0 for interrupt/trap gates high 3bit:reserved(should be 0 I guess)
+	uint32_t type             : 4;//type(STS_{TG,IG32,TG32})
+	uint32_t system           : 1;//must be 0(system)
+	uint32_t privilege_level  : 2;//descriptor(meaning new)privilege
+	uint32_t present          : 1;//Present
+	uint32_t offset_31_16     : 16;//high bits of offset in segment
 };
 
 // Set up a normal interrupt/trap gate descriptor.

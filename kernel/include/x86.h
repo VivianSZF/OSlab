@@ -4,7 +4,7 @@
 #define JOS_INC_X86_H
 
 #include "types.h"
-#include "memory.h"
+#include "mmu.h"
 #include "cpu.h"
 
 static __inline void breakpoint(void) __attribute__((always_inline));
@@ -304,4 +304,8 @@ xchg(volatile uint32_t *addr, uint32_t newval)
 	return result;
 }
 
+static inline void
+load_tr(uint16_t selector) {
+	asm volatile("ltr %0" : : "r"(selector));
+}
 #endif /* !JOS_INC_X86_H */

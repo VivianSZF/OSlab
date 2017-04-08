@@ -1,15 +1,16 @@
 #include "x86.h"
 #include "common.h"
+#include "mmu.h"
 
 #define INTERRUPT_GATE_32   0xE
 #define TRAP_GATE_32        0xF
 
 /* IDT表的内容 */
-struct GateDescriptor idt[NR_IRQ];
+struct Gatedesc idt[NR_IRQ];
 
 /* 初始化一个中断门(interrupt gate) */
 static void
-set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
+set_intr(struct Gatedesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
 	ptr->offset_15_0 = offset & 0xFFFF;
 	ptr->segment = selector << 3;
 	ptr->pad0 = 0;
@@ -22,7 +23,7 @@ set_intr(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_
 
 /* 初始化一个陷阱门(trap gate) */
 static void
-set_trap(struct GateDescriptor *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
+set_trap(struct Gatedesc *ptr, uint32_t selector, uint32_t offset, uint32_t dpl) {
 	ptr->offset_15_0 = offset & 0xFFFF;
 	ptr->segment = selector << 3;
 	ptr->pad0 = 0;

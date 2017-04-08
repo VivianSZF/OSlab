@@ -1,7 +1,7 @@
 #ifndef __SYSCALL_H__
 #define __SYSCALL_H__
 
-#include "memory.h"
+#include "mmu.h"
 
 void do_syscall(struct TrapFrame*);
 
