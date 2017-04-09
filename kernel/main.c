@@ -9,6 +9,9 @@
 #include "pmap.h"
 #include "pcb.h"
 
+void pcb_init();
+PCB* pcb_new();
+
 static int tick = 0;
 void timer_event()
 {
@@ -35,7 +38,7 @@ int main()
 	page_init();
 	//printk("here");
 	init_segment();
-	init_pcb();
+	pcb_init();
 	//printk("here");
 	init_serial();
 	init_video();
@@ -45,9 +48,9 @@ int main()
 	set_timer_intr_handler(timer_event);
 	set_keyboard_intr_handler(keyboard_event);
 	//printk("here");
-	//PCB* p=pcb_new();
+	PCB* p=pcb_new();
 	//printk("er are here");
-	to_user(pcb_new());
+	to_user(p);
 	while(1);
 	return 0;
 }

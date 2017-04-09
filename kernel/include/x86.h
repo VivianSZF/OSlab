@@ -304,8 +304,4 @@ xchg(volatile uint32_t *addr, uint32_t newval)
 	return result;
 }
 
-static inline void
-load_tr(uint16_t selector) {
-	asm volatile("ltr %0" : : "r"(selector));
-}
 #endif /* !JOS_INC_X86_H */

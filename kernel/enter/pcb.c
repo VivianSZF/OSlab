@@ -14,7 +14,7 @@ PCB *pcb_free_list;
 #define GAME_OFFSET (400 * SECT_SIZE)
 static uint8_t elfs[4096];
 
-void init_pcb()
+void pcb_init()
 {
 	int i;
 	for (i = 0; i < MAXN_PCB; i++) {

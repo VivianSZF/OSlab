@@ -27,7 +27,6 @@ set_segment(Segdesc *ptr, uint32_t pl, uint32_t type) {
 }
 
 static TSS tss; 
-
 inline static void
 set_tss(Segdesc *ptr) {
 	tss.ss0 = KSEL(SEG_KERNEL_DATA);
@@ -56,6 +55,11 @@ void write_gdtr(void *addr, uint32_t size)
 	data[1] = (uint32_t)addr;
 	data[2] = ((uint32_t)addr) >> 16;
 	asm volatile("lgdt (%0)" : : "r"(data));//lgdt(*data);
+}
+
+static inline void load_tr(uint16_t selector) 
+{
+	asm volatile("ltr %0" : : "r"(selector));
 }
 
 void
