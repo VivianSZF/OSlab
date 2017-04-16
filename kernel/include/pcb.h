@@ -10,6 +10,8 @@
 typedef struct ProcessControlBlock {
 	struct TrapFrame tf;
 	pde_t *pgdir;
+	uint32_t pid;
+
 	struct ProcessControlBlock *pcbo;
 } PCB;
 
