@@ -4,16 +4,19 @@
 #include "types.h"
 #include "mmu.h"
 #include "memlayout.h"
+#include "list.h"
 #define MAXN_PCB 10
 
 
 typedef struct ProcessControlBlock {
 	struct TrapFrame tf;
 	pde_t *pgdir;
-	uint32_t pid;
-
-	struct ProcessControlBlock *pcbo;
+	list plist;
+	uint32_t pid,ppid;
+	uint32_t timer;
+	//struct ProcessControlBlock *pcbo;
 } PCB;
 
+list pnow,pzu,pready,pfree;
 
 #endif

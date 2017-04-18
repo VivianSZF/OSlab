@@ -6,31 +6,64 @@
 #include "string.h"
 #include "elf.h"
 #include "x86.h"
+#include "list.h"
 
 PCB pcb[MAXN_PCB];
-PCB *pcb_free_list;
+PCB *pcbnow,a;
+list *now;
 
 #define SECT_SIZE 512
 #define GAME_OFFSET (400 * SECT_SIZE)
 static uint8_t elfs[4096];
 
+void list_init(list *one)
+{
+	one->pre=one->next=NULL;
+}
+
 void pcb_init()
 {
-	int i;
+	/*int i;
 	for (i = 0; i < MAXN_PCB; i++) {
 		pcb[i].pcbo = pcb_free_list;
 		pcb_free_list = &pcb[i];
+	}*/
+	list_init(&pnow);
+	list_init(&pzu);
+	list_init(&pready);
+	list_init(&pfree);
+	int i;
+	for(i=0;i<MAXN_PCB;i++){
+		list *t=&pfree;
+		list_in(t->prev,t,pcb[i].list);
 	}
+	now=&pready;
+	a.pgdir=kern_pgdir;
+	pcbnow=&a;		
 }
+
+static uint32_t cntpid=0;
 PCB* pcb_alloc()
 {
+	/*
 	PCB *p = pcb_free_list;
-	if (p == NULL) return NULL;
+	if (p == NULL) return NULL;*/
+	list *t=&pfree;
+	list *head=NULL;
+	if(t->next!=NULL)
+		head=t->next;
+	else
+		return NULL;
+	head,PCB,list
+	PCB *p=aaa;//?????
 	struct Page *pp = page_alloc(ALLOC_ZERO);
 	if (pp == NULL) return NULL;
 	p->pgdir = page2kva(pp);
 	pp->pp_ref ++;
-	memcpy(p->pgdir, kern_pgdir, PGSIZE);
+	p->ppid=0;
+	p->pid=cntpid++;
+
+	/*memcpy(p->pgdir, kern_pgdir, PGSIZE);
 	p->pgdir[PDX(UVPT)] = PADDR(p->pgdir) | PTE_P | PTE_U;
 	memset(&p->tf, 0, sizeof(p->tf));
 	p->tf.ds = GD_UD | 3;
@@ -40,7 +73,10 @@ PCB* pcb_alloc()
 	p->tf.cs = GD_UT | 3;
 	p->tf.eflags = 0x2 | FL_IF;
 	pcb_free_list = pcb_free_list->pcbo;
-	return p;
+	return p;*/
+
+
+
 }
 
 void mm_malloc(pde_t *pgdir, uint32_t va, size_t len)
