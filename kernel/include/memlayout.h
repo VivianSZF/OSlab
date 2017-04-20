@@ -94,7 +94,7 @@
 #define VPT		(KERNBASE - PTSIZE)
 #define KSTACKTOP	KERNBASE
 #define KSTKSIZE	(8*PGSIZE)   		// size of a kernel stack
-
+#define STACKSIZE       (PGSIZE)
 #define ULIM		(KSTACKTOP - PTSIZE) 
 
 /*
@@ -120,7 +120,7 @@
 // Next page left invalid to guard against exception stack overflow; then:
 // Top of normal user stack
 #define USTACKTOP	(UTOP - 2*PGSIZE)
-
+#define USTACKSIZE        (8*PGSIZE)
 // Where user programs generally begin
 #define UTEXT		(2*PTSIZE)
 

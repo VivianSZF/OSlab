@@ -9,17 +9,11 @@
 #include "list.h"
 
 PCB pcb[MAXN_PCB];
-PCB *pcbnow,a;
-list *now;
 
 #define SECT_SIZE 512
 #define GAME_OFFSET (400 * SECT_SIZE)
 static uint8_t elfs[4096];
 
-void list_init(list *one)
-{
-	one->pre=one->next=NULL;
-}
 
 void pcb_init()
 {
@@ -28,18 +22,19 @@ void pcb_init()
 		pcb[i].pcbo = pcb_free_list;
 		pcb_free_list = &pcb[i];
 	}*/
-	list_init(&pnow);
-	list_init(&pzu);
-	list_init(&pready);
-	list_init(&pfree);
+	list_init(&ready);
+	list_init(&block);
+	list_init(&free);
+	now=&ready;
+	idle.pgdir=kern_pgdir;
+	pcbnow=&idle;
 	int i;
 	for(i=0;i<MAXN_PCB;i++){
-		list *t=&pfree;
-		list_in(t->prev,t,pcb[i].list);
+		list_add_before(&free,&pcb[i].plist);
+		pcb[i].pid=i+1;
+		pcb[i].ppid=0;
 	}
-	now=&pready;
-	a.pgdir=kern_pgdir;
-	pcbnow=&a;		
+			
 }
 
 static uint32_t cntpid=0;
@@ -47,41 +42,35 @@ PCB* pcb_alloc()
 {
 	/*
 	PCB *p = pcb_free_list;
-	if (p == NULL) return NULL;*/
-	list *t=&pfree;
-	list *head=NULL;
-	if(t->next!=NULL)
-		head=t->next;
-	else
-		return NULL;
-	head,PCB,list
-	PCB *p=aaa;//?????
+ 	if (p == NULL) return NULL;*/
+	PCB *p=list_entry(free.next,PCB,plist);
 	struct Page *pp = page_alloc(ALLOC_ZERO);
 	if (pp == NULL) return NULL;
 	p->pgdir = page2kva(pp);
+	memcpy(p->pgdir,kern_pgdir,PGSIZE);
 	pp->pp_ref ++;
 	p->ppid=0;
 	p->pid=cntpid++;
+	p->state=RUNNING;
+	list_del(&p->plist);
+	list_add_before(&ready,&p->plist);
 
-	/*memcpy(p->pgdir, kern_pgdir, PGSIZE);
-	p->pgdir[PDX(UVPT)] = PADDR(p->pgdir) | PTE_P | PTE_U;
-	memset(&p->tf, 0, sizeof(p->tf));
-	p->tf.ds = GD_UD | 3;
-	p->tf.es = GD_UD | 3;
-	p->tf.ss = GD_UD | 3;
-	p->tf.esp = USTACKTOP;
-	p->tf.cs = GD_UT | 3;
-	p->tf.eflags = 0x2 | FL_IF;
-	pcb_free_list = pcb_free_list->pcbo;
-	return p;*/
+	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame));	
+	tf->ds = SELECTOR_USER(SEG_USER_DATA);
+	tf->es = SELECTOR_USER(SEG_USER_DATA);
+	tf->ss = SELECTOR_USER(SEG_USER_DATA);
+	tf->cs = SELECTOR_USER(SEG_USER_CODE);
+	tf->esp = USTACKTOP;
+	tf->eflags = 0x2 | FL_IF;
+	p->tf=tf;
 
-
+	return p;
 
 }
 
 void mm_malloc(pde_t *pgdir, uint32_t va, size_t len)
 {
-	struct PageInfo *p;
+	struct Page *p;
 	uint32_t va_start = ROUNDDOWN(va, PGSIZE);
 	uint32_t va_end = ROUNDUP(va+len, PGSIZE);
 	int i;
@@ -140,8 +129,8 @@ PCB* pcb_new()
 		readseg(ph->p_va, ph->p_filesz, GAME_OFFSET + ph->p_offset);
 		memset((void*)(ph->p_va+ph->p_filesz), 0, ph->p_memsz-ph->p_filesz);
 	}
-	p->tf.eip = elf -> e_entry;
-	mm_malloc(p->pgdir, USTACKTOP - KSTKSIZE, KSTKSIZE);
+	(p->tf)->eip = elf -> e_entry;
+	mm_malloc(p->pgdir, USTACKTOP - USTACKSIZE, USTACKSIZE);
 	lcr3(PADDR(kern_pgdir));
 	return p;
 }

@@ -5,4 +5,4 @@ obj/kernel/main.o: kernel/main.c /usr/include/stdc-predef.h \
  kernel/include/serial.h kernel/include/irq.h kernel/include/x86.h \
  kernel/include/mmu.h kernel/include/cpu.h kernel/include/common.h \
  kernel/include/assert.h kernel/include/pmap.h kernel/include/memlayout.h \
- kernel/include/pcb.h
+ kernel/include/pcb.h kernel/include/list.h

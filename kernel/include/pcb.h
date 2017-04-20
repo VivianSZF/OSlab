@@ -6,17 +6,31 @@
 #include "memlayout.h"
 #include "list.h"
 #define MAXN_PCB 10
+#define KSTACK_SIZE 4096
+#define RUNNABLE 0
+#define RUNNING 1
+#define BLOCKED 2
+#define DEAD 3
 
 
-typedef struct ProcessControlBlock {
-	struct TrapFrame tf;
-	pde_t *pgdir;
-	list plist;
-	uint32_t pid,ppid;
-	uint32_t timer;
+typedef union ProcessControlBlock {
+	uint8_t kstack[KSTACK_SIZE];
+	struct{
+		TrapFrame *tf;
+		pde_t *pgdir;
+		list plist;
+		uint32_t pid,ppid;
+		int state;
+		int timecount;
+		int sleeptime;
+	};
 	//struct ProcessControlBlock *pcbo;
-} PCB;
+}PCB;
 
-list pnow,pzu,pready,pfree;
+list ready,block,free;
+PCB idle;
+PCB *pcbnow;
+list *now;
 
+void set_tss_esp0(uint32_t);
 #endif

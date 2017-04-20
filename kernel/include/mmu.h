@@ -286,7 +286,7 @@ typedef struct {
 	char t[88];
 }TSS;
 
-struct TrapFrame {
+typedef struct TrapFrame {
 	uint32_t edi, esi, ebp, xxx, ebx, edx, ecx, eax;
 	uint32_t gs, fs, es, ds;
 	int32_t irq;
@@ -298,7 +298,7 @@ struct TrapFrame {
 	uint32_t esp;
 	uint16_t ss;
 	uint16_t padding4;
-};
+}TrapFrame;
 
 // Gate descriptors for interrupts and traps
 /*struct Gatedesc {

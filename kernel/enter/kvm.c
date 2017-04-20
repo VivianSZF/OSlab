@@ -3,7 +3,7 @@
 #include "common.h"
 #include "pcb.h"
 #include "pmap.h"
-
+#include "string.h"
 
 
 //refer to PA.......
@@ -30,7 +30,6 @@ static TSS tss;
 inline static void
 set_tss(Segdesc *ptr) {
 	tss.ss0 = KSEL(SEG_KERNEL_DATA);
-	tss.esp0 = KSTACKTOP;
 	uint32_t base = (uint32_t)&tss;
 	uint32_t limit = sizeof(TSS) - 1;
 	ptr->limit_15_0  = limit & 0xffff;
@@ -46,6 +45,10 @@ set_tss(Segdesc *ptr) {
 	ptr->pad0 = 1;
 	ptr->granularity = 0;
 	ptr->base_31_24  = base >> 24;
+}
+
+void set_tss_esp0(uint32_t esp) {
+	tss.esp0 = esp;
 }
 
 void write_gdtr(void *addr, uint32_t size)
