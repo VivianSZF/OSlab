@@ -135,3 +135,14 @@ PCB* pcb_new()
 	return p;
 }
 
+PCB* pcb_deepcopy(PCB *fa,PCB *tb)
+{
+	int movaddr=&((PCB*)0->addr);
+	int copysize=KSTACK_SIZE-movaddr;
+	memcpy(tb->kstack+movaddr,fa->kstack+movaddr,copysize);
+	tb->tf=fa->tf;//tb->kstack+(fa->tf-(void*)fa->kstack);
+	pgdir_copy(fa->pgdir,tb->pgdir);
+	tb->state=fa->state;
+	tb->timecount=fa->timecount;
+	tb->sleeptime=fa->sleeptime;
+}

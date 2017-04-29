@@ -180,6 +180,49 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 
 }
 
+void pgdir_copy(pde_t *src, pde_t *dst)
+{
+	struct Page *pp;
+	int pdx, ptx;
+	for (pdx = 0; pdx < 1024; pdx++) {
+		if (src[pdx] & PTE_P) {	
+			if (dst[pdx] & PTE_P) continue;
+			pte_t *src_table = KADDR(PTE_ADDR(src[pdx]));
+			pp = page_alloc(ALLOC_ZERO);
+			pp->pp_ref ++;
+			dst[pdx] = page2pa(pp) | PTE_ATTR(src[pdx]);
+			pte_t *dst_table = KADDR(PTE_ADDR(dst[pdx]));
+			for (ptx = 0; ptx < 1024; ptx++) {
+				if (src_table[ptx] & PTE_P) {
+					pp = page_alloc(0);
+					pp->pp_ref ++;
+					dst_table[ptx] = page2pa(pp) | PTE_ATTR(src_table[ptx]);
+					memcpy(page2kva(pp), KADDR(PTE_ADDR(src_table[ptx])), PGSIZE);
+				}
+			}
+		}
+	}
+}
+void pgdir_remove(pde_t *pgdir)
+{
+	int pdx, ptx;
+	for (pdx = 0; pdx < 1024; pdx++) {
+		if (pgdir[pdx] & PTE_P) {
+			if (kern_pgdir[pdx] & PTE_P) continue;
+			pte_t *pgtable = KADDR(PTE_ADDR(pgdir[pdx]));
+			for (ptx = 0; ptx < NPTENTRIES; ++ptx) {
+				if (pgtable[ptx] & PTE_P) {
+					page_decref(pa2page(PTE_ADDR(pgtable[ptx])));
+				}
+			}
+			page_decref(pa2page(PTE_ADDR(pgdir[pdx])));
+			pgdir[pdx] = 0;
+		}
+	}
+}
+
+
+
 //
 // Map [va, va+size) of virtual address space to physical [pa, pa+size)
 // in the page table rooted at pgdir.  Size is a multiple of PGSIZE.
