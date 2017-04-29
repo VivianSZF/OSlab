@@ -219,6 +219,7 @@ void pgdir_remove(pde_t *pgdir)
 			pgdir[pdx] = 0;
 		}
 	}
+	page_decref(pa2page(PADDR(pgdir)));
 }
 
 

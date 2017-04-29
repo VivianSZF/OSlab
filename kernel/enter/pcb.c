@@ -26,8 +26,8 @@ void pcb_init()
 	list_init(&block);
 	list_init(&free);
 	now=&ready;
-	idle.pgdir=kern_pgdir;
-	pcbnow=&idle;
+	init.pgdir=kern_pgdir;
+	pcbnow=&init;
 	int i;
 	for(i=0;i<MAXN_PCB;i++){
 		list_add_before(&free,&pcb[i].plist);
@@ -55,7 +55,7 @@ PCB* pcb_alloc()
 	list_del(&p->plist);
 	list_add_before(&ready,&p->plist);
 
-	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame));	
+	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);	//??
 	tf->ds = SELECTOR_USER(SEG_USER_DATA);
 	tf->es = SELECTOR_USER(SEG_USER_DATA);
 	tf->ss = SELECTOR_USER(SEG_USER_DATA);
@@ -145,4 +145,10 @@ PCB* pcb_deepcopy(PCB *fa,PCB *tb)
 	tb->state=fa->state;
 	tb->timecount=fa->timecount;
 	tb->sleeptime=fa->sleeptime;
+}
+
+void pcb_remove(PCB *p)
+{
+	pgdir_remove(p->pgdir);
+	p->pgdir=NULL;
 }
