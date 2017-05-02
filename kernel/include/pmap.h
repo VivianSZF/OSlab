@@ -56,7 +56,9 @@ int	page_insert(pde_t *pgdir, struct Page *pp, void *va, int perm);
 void	page_remove(pde_t *pgdir, void *va);
 struct Page *page_lookup(pde_t *pgdir, void *va, pte_t **pte_store);
 void	page_decref(struct Page *pp);
-
+pte_t *pgdir_walk(pde_t *pgdir, const void *va, int create);
+void	pgdir_copy(pde_t *src, pde_t *dst);
+void	pgdir_remove(pde_t *pgdir);
 void	tlb_invalidate(pde_t *pgdir, void *va);
 
 static inline physaddr_t
@@ -79,6 +81,6 @@ page2kva(struct Page *pp)
 	return KADDR(page2pa(pp));
 }
 
-pte_t *pgdir_walk(pde_t *pgdir, const void *va, int create);
+
 
 #endif /* !JOS_KERN_PMAP_H */

@@ -23,12 +23,13 @@ typedef union ProcessControlBlock {
 		int state;
 		int timecount;
 		int sleeptime;
+		void *addr;
 	};
 	//struct ProcessControlBlock *pcbo;
 }PCB;
 
 list ready,block,free;
-PCB idle;
+PCB init;
 PCB *pcbnow;
 list *now;
 
