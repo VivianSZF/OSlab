@@ -41,9 +41,9 @@ static uint32_t cntpid=0;
 PCB* pcb_alloc()
 {
 	/*
-	PCB *p = pcb_free_list;
+	PCB* p = pcb_free_list;
  	if (p == NULL) return NULL;*/
-	PCB *p=list_entry(free.next,PCB,plist);
+	PCB* p=list_entry(free.next,PCB,plist);
 	struct Page *pp = page_alloc(ALLOC_ZERO);
 	if (pp == NULL) return NULL;
 	p->pgdir = page2kva(pp);
@@ -56,10 +56,10 @@ PCB* pcb_alloc()
 	list_add_before(&ready,&p->plist);
 
 	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);	//??
-	tf->ds = SELECTOR_USER(SEG_USER_DATA);
-	tf->es = SELECTOR_USER(SEG_USER_DATA);
-	tf->ss = SELECTOR_USER(SEG_USER_DATA);
-	tf->cs = SELECTOR_USER(SEG_USER_CODE);
+	tf->ds = USEL(SEG_USER_DATA);
+	tf->es = USEL(SEG_USER_DATA);
+	tf->ss = USEL(SEG_USER_DATA);
+	tf->cs = USEL(SEG_USER_CODE);
 	tf->esp = USTACKTOP;
 	tf->eflags = 0x2 | FL_IF;
 	p->tf=tf;
@@ -137,7 +137,7 @@ PCB* pcb_new()
 
 PCB* pcb_deepcopy(PCB *fa,PCB *tb)
 {
-	int movaddr=&((PCB*)0->addr);
+	int movaddr=(int)(&((PCB*)0)->addr);
 	int copysize=KSTACK_SIZE-movaddr;
 	memcpy(tb->kstack+movaddr,fa->kstack+movaddr,copysize);
 	tb->tf=fa->tf;//tb->kstack+(fa->tf-(void*)fa->kstack);

@@ -1,11 +1,14 @@
 #include "pcb.h"
-#include "list.h"
 #include "common.h"
+#include "memlayout.h"
+#include "mmu.h"
+#include "pmap.h"
+#include "x86.h"
 
-extern pcb_deepcopy(PCB*,PCB*);
+extern PCB* pcb_deepcopy(PCB*,PCB*);
 void sys_fork(){
-	PCB *fa=pcbnow;
-	PCB *ch=pcb_alloc();
+	PCB* fa=pcbnow;
+	PCB* ch=pcb_alloc();
 	pcb_deepcopy(fa,ch);
 	ch->ppid=fa->pid;
 	fa->tf->eax=ch->pid;
@@ -70,6 +73,6 @@ void sys_sleep(){
 	if(now==&ready)
 		pcbnow=&init;
 	else
-		pcbnow=list_entry(now,PCB,list);
-	lcr3(PADDR(pcbnow->pgdir);
+		pcbnow=list_entry(now,PCB,plist);
+	lcr3(PADDR(pcbnow->pgdir));
 }

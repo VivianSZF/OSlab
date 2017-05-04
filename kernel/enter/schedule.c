@@ -29,7 +29,7 @@ void schedule(){
 		set_tss_esp0(t);
 	}
 	else{
-		pcbnow=&idle;
+		pcbnow=&init;
 		now=&ready;
 		lcr3(PADDR(kern_pgdir));
 	}

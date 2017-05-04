@@ -80,14 +80,14 @@ init_segment(void) {
 void to_user(PCB *p)
 {
 	lcr3(PADDR(p->pgdir));
-	asm volatile("mov %0, %%ds" : : "r"(p->tf.ds));
-	asm volatile("mov %0, %%es" : : "r"(p->tf.es));
-	asm volatile("mov %0, %%fs" : : "r"(p->tf.fs));
-	asm volatile("mov %0, %%gs" : : "r"(p->tf.gs));
-	asm volatile("pushl %0" : : "r"((uint32_t)p->tf.ss));
-	asm volatile("pushl %0" : : "r"(p->tf.esp));
-	asm volatile("pushl %0" : : "r"(p->tf.eflags));
-	asm volatile("pushl %0" : : "r"((uint32_t)p->tf.cs));
-	asm volatile("pushl %0" : : "r"(p->tf.eip));
+	asm volatile("mov %0, %%ds" : : "r"(p->tf->ds));
+	asm volatile("mov %0, %%es" : : "r"(p->tf->es));
+	asm volatile("mov %0, %%fs" : : "r"(p->tf->fs));
+	asm volatile("mov %0, %%gs" : : "r"(p->tf->gs));
+	asm volatile("pushl %0" : : "r"((uint32_t)p->tf->ss));
+	asm volatile("pushl %0" : : "r"(p->tf->esp));
+	asm volatile("pushl %0" : : "r"(p->tf->eflags));
+	asm volatile("pushl %0" : : "r"((uint32_t)p->tf->cs));
+	asm volatile("pushl %0" : : "r"(p->tf->eip));
 	asm volatile("iret");	
 }

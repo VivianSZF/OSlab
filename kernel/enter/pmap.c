@@ -190,13 +190,13 @@ void pgdir_copy(pde_t *src, pde_t *dst)
 			pte_t *src_table = KADDR(PTE_ADDR(src[pdx]));
 			pp = page_alloc(ALLOC_ZERO);
 			pp->pp_ref ++;
-			dst[pdx] = page2pa(pp) | PTE_ATTR(src[pdx]);
-			pte_t *dst_table = KADDR(PTE_ADDR(dst[pdx]));
-			for (ptx = 0; ptx < 1024; ptx++) {
-				if (src_table[ptx] & PTE_P) {
+			dst[pdx] = page2pa(pp) | (src[pdx]&0xFFF);
+			pte_t *dst_table = KADDR(dst[pdx]&0xFFF);
+			for (ptx = 0; ptx < 1024; ptx++) { 
+				if (src_table[ptx] & PTE_P) { 
 					pp = page_alloc(0);
 					pp->pp_ref ++;
-					dst_table[ptx] = page2pa(pp) | PTE_ATTR(src_table[ptx]);
+					dst_table[ptx] = page2pa(pp) | (src_table[ptx]&0xFFF);
 					memcpy(page2kva(pp), KADDR(PTE_ADDR(src_table[ptx])), PGSIZE);
 				}
 			}
