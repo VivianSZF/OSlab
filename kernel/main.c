@@ -45,12 +45,19 @@ int main()
 	init_timer();
 	init_idt();
 	init_intr();
+	
+	//printk("here");
+
 	set_timer_intr_handler(timer_event);
 	set_keyboard_intr_handler(keyboard_event);
 	//printk("here");
-	PCB* p=pcb_new();
-	//printk("er are here");
-	to_user(p);
+	pcb_new();
+	//PCB* p=pcb_new();
+	enable_interrupt();
+	hlt();
+	printk("we are here");
+	//to_user(p);
+	//printk("here");
 	while(1);
 	return 0;
 }

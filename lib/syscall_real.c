@@ -36,3 +36,23 @@ int syswrite(int fd, const void*buf1, int n)
 {
 	return syscall(SYS_write, fd, buf1, n);
 }
+
+int fork(void)
+{
+	return syscall(SYS_fork);
+}
+
+int getpid(void)
+{
+	return syscall(SYS_getpid);
+}
+
+void exit(int suc)
+{
+	syscall(SYS_exit,suc);
+}
+
+int sleep(int sec)
+{
+	return syscall(SYS_sleep,sec);
+}
