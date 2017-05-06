@@ -26,7 +26,9 @@
 # ！调用C编写的中断处理程�?见irq/irq_handle.c)�?
 .globl asm_do_irq
 .extern irq_handle
+.extern pcbnow
 asm_do_irq:
+	cli
 	pushl %ds
   	pushl %es
   	pushl %fs
@@ -37,7 +39,9 @@ asm_do_irq:
   	movw %ax, %es
 	pushl %esp			# ???
 	call irq_handle
-	addl $4, %esp
+	movl pcbnow,%eax
+	movl (%eax),%esp
+	#addl $4, %esp
 
 	popal
 	popl %gs
@@ -45,4 +49,5 @@ asm_do_irq:
   	popl %es
   	popl %ds
 	addl $8, %esp
+	sti
 	iret

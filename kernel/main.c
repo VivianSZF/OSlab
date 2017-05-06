@@ -59,5 +59,6 @@ int main()
 	//to_user(p);
 	//printk("here");
 	while(1);
+	printk("fine okkkkkk");
 	return 0;
 }
