@@ -9,6 +9,11 @@ extern void init_serial();
 extern void init_timer();
 extern void init_idt();
 extern void init_intr();
+extern int fork(void);
+extern int getpid(void);
+extern void exit(int suc);
+extern void sleep(int sec); 
+
 
 void
 game_init(void) {

@@ -1605,44 +1605,45 @@ c0100e58:	89 04 24             	mov    %eax,(%esp)
 c0100e5b:	e8 f9 fe ff ff       	call   c0100d59 <page2kva>
 c0100e60:	8b 55 f4             	mov    -0xc(%ebp),%edx
 c0100e63:	89 42 04             	mov    %eax,0x4(%edx)
-	memcpy(p->pgdir,kern_pgdir,PGSIZE);
-c0100e66:	8b 15 40 f7 16 c0    	mov    0xc016f740,%edx
-c0100e6c:	8b 45 f4             	mov    -0xc(%ebp),%eax
-c0100e6f:	8b 40 04             	mov    0x4(%eax),%eax
-c0100e72:	c7 44 24 08 00 10 00 	movl   $0x1000,0x8(%esp)
-c0100e79:	00 
-c0100e7a:	89 54 24 04          	mov    %edx,0x4(%esp)
-c0100e7e:	89 04 24             	mov    %eax,(%esp)
-c0100e81:	e8 fa 1d 00 00       	call   c0102c80 <memcpy>
+	//memcpy(p->pgdir,kern_pgdir,PGSIZE);
 	pp->pp_ref ++;
-c0100e86:	8b 45 f0             	mov    -0x10(%ebp),%eax
-c0100e89:	0f b7 40 04          	movzwl 0x4(%eax),%eax
-c0100e8d:	8d 50 01             	lea    0x1(%eax),%edx
-c0100e90:	8b 45 f0             	mov    -0x10(%ebp),%eax
-c0100e93:	66 89 50 04          	mov    %dx,0x4(%eax)
+c0100e66:	8b 45 f0             	mov    -0x10(%ebp),%eax
+c0100e69:	0f b7 40 04          	movzwl 0x4(%eax),%eax
+c0100e6d:	8d 50 01             	lea    0x1(%eax),%edx
+c0100e70:	8b 45 f0             	mov    -0x10(%ebp),%eax
+c0100e73:	66 89 50 04          	mov    %dx,0x4(%eax)
 	p->ppid=0;
-c0100e97:	8b 45 f4             	mov    -0xc(%ebp),%eax
-c0100e9a:	c7 40 14 00 00 00 00 	movl   $0x0,0x14(%eax)
+c0100e77:	8b 45 f4             	mov    -0xc(%ebp),%eax
+c0100e7a:	c7 40 14 00 00 00 00 	movl   $0x0,0x14(%eax)
 	p->pid=cntpid++;
-c0100ea1:	a1 20 14 13 c0       	mov    0xc0131420,%eax
-c0100ea6:	8d 50 01             	lea    0x1(%eax),%edx
-c0100ea9:	89 15 20 14 13 c0    	mov    %edx,0xc0131420
-c0100eaf:	8b 55 f4             	mov    -0xc(%ebp),%edx
-c0100eb2:	89 42 10             	mov    %eax,0x10(%edx)
+c0100e81:	a1 20 14 13 c0       	mov    0xc0131420,%eax
+c0100e86:	8d 50 01             	lea    0x1(%eax),%edx
+c0100e89:	89 15 20 14 13 c0    	mov    %edx,0xc0131420
+c0100e8f:	8b 55 f4             	mov    -0xc(%ebp),%edx
+c0100e92:	89 42 10             	mov    %eax,0x10(%edx)
 	p->state=RUNNING;
-c0100eb5:	8b 45 f4             	mov    -0xc(%ebp),%eax
-c0100eb8:	c7 40 18 01 00 00 00 	movl   $0x1,0x18(%eax)
+c0100e95:	8b 45 f4             	mov    -0xc(%ebp),%eax
+c0100e98:	c7 40 18 01 00 00 00 	movl   $0x1,0x18(%eax)
 	list_del(&p->plist);
-c0100ebf:	8b 45 f4             	mov    -0xc(%ebp),%eax
-c0100ec2:	83 c0 08             	add    $0x8,%eax
-c0100ec5:	89 04 24             	mov    %eax,(%esp)
-c0100ec8:	e8 56 fd ff ff       	call   c0100c23 <list_del>
+c0100e9f:	8b 45 f4             	mov    -0xc(%ebp),%eax
+c0100ea2:	83 c0 08             	add    $0x8,%eax
+c0100ea5:	89 04 24             	mov    %eax,(%esp)
+c0100ea8:	e8 76 fd ff ff       	call   c0100c23 <list_del>
 	list_add_before(&ready,&p->plist);
-c0100ecd:	8b 45 f4             	mov    -0xc(%ebp),%eax
-c0100ed0:	83 c0 08             	add    $0x8,%eax
-c0100ed3:	89 44 24 04          	mov    %eax,0x4(%esp)
-c0100ed7:	c7 04 24 00 4f 16 c0 	movl   $0xc0164f00,(%esp)
-c0100ede:	e8 f3 fc ff ff       	call   c0100bd6 <list_add_before>
+c0100ead:	8b 45 f4             	mov    -0xc(%ebp),%eax
+c0100eb0:	83 c0 08             	add    $0x8,%eax
+c0100eb3:	89 44 24 04          	mov    %eax,0x4(%esp)
+c0100eb7:	c7 04 24 00 4f 16 c0 	movl   $0xc0164f00,(%esp)
+c0100ebe:	e8 13 fd ff ff       	call   c0100bd6 <list_add_before>
+	memcpy(p->pgdir,kern_pgdir,PGSIZE);
+c0100ec3:	8b 15 40 f7 16 c0    	mov    0xc016f740,%edx
+c0100ec9:	8b 45 f4             	mov    -0xc(%ebp),%eax
+c0100ecc:	8b 40 04             	mov    0x4(%eax),%eax
+c0100ecf:	c7 44 24 08 00 10 00 	movl   $0x1000,0x8(%esp)
+c0100ed6:	00 
+c0100ed7:	89 54 24 04          	mov    %edx,0x4(%esp)
+c0100edb:	89 04 24             	mov    %eax,(%esp)
+c0100ede:	e8 9d 1d 00 00       	call   c0102c80 <memcpy>
 
 	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);	//??
 c0100ee3:	8b 45 f4             	mov    -0xc(%ebp),%eax
@@ -1660,9 +1661,9 @@ c0100f05:	66 c7 40 48 23 00    	movw   $0x23,0x48(%eax)
 	tf->cs = USEL(SEG_USER_CODE);
 c0100f0b:	8b 45 ec             	mov    -0x14(%ebp),%eax
 c0100f0e:	66 c7 40 3c 1b 00    	movw   $0x1b,0x3c(%eax)
-	tf->esp = USTACKTOP;
+	tf->esp = USTACKTOP-8;
 c0100f14:	8b 45 ec             	mov    -0x14(%ebp),%eax
-c0100f17:	c7 40 44 00 e0 ff be 	movl   $0xbeffe000,0x44(%eax)
+c0100f17:	c7 40 44 f8 df ff be 	movl   $0xbeffdff8,0x44(%eax)
 	tf->eflags = 0x2 | FL_IF;
 c0100f1e:	8b 45 ec             	mov    -0x14(%ebp),%eax
 c0100f21:	c7 40 40 02 02 00 00 	movl   $0x202,0x40(%eax)
@@ -1726,7 +1727,7 @@ c0100f9a:	c7 44 24 0c 3d 3c 10 	movl   $0xc0103c3d,0xc(%esp)
 c0100fa1:	c0 
 c0100fa2:	c7 44 24 08 a9 3b 10 	movl   $0xc0103ba9,0x8(%esp)
 c0100fa9:	c0 
-c0100faa:	c7 44 24 04 50 00 00 	movl   $0x50,0x4(%esp)
+c0100faa:	c7 44 24 04 51 00 00 	movl   $0x51,0x4(%esp)
 c0100fb1:	00 
 c0100fb2:	c7 04 24 47 3c 10 c0 	movl   $0xc0103c47,(%esp)
 c0100fb9:	e8 cc 17 00 00       	call   c010278a <_panic>
@@ -2002,7 +2003,7 @@ c01011e8:	c7 44 24 0c 5a 3c 10 	movl   $0xc0103c5a,0xc(%esp)
 c01011ef:	c0 
 c01011f0:	c7 44 24 08 a9 3b 10 	movl   $0xc0103ba9,0x8(%esp)
 c01011f7:	c0 
-c01011f8:	c7 44 24 04 7a 00 00 	movl   $0x7a,0x4(%esp)
+c01011f8:	c7 44 24 04 7b 00 00 	movl   $0x7b,0x4(%esp)
 c01011ff:	00 
 c0101200:	c7 04 24 47 3c 10 c0 	movl   $0xc0103c47,(%esp)
 c0101207:	e8 7e 15 00 00       	call   c010278a <_panic>
@@ -2025,7 +2026,7 @@ c010122e:	89 45 e8             	mov    %eax,-0x18(%ebp)
 c0101231:	8b 45 f0             	mov    -0x10(%ebp),%eax
 c0101234:	8b 40 04             	mov    0x4(%eax),%eax
 c0101237:	89 44 24 08          	mov    %eax,0x8(%esp)
-c010123b:	c7 44 24 04 7d 00 00 	movl   $0x7d,0x4(%esp)
+c010123b:	c7 44 24 04 7e 00 00 	movl   $0x7e,0x4(%esp)
 c0101242:	00 
 c0101243:	c7 04 24 47 3c 10 c0 	movl   $0xc0103c47,(%esp)
 c010124a:	e8 7a fa ff ff       	call   c0100cc9 <_paddr>
@@ -2118,7 +2119,7 @@ c010131a:	e8 16 fc ff ff       	call   c0100f35 <mm_malloc>
 	lcr3(PADDR(kern_pgdir));
 c010131f:	a1 40 f7 16 c0       	mov    0xc016f740,%eax
 c0101324:	89 44 24 08          	mov    %eax,0x8(%esp)
-c0101328:	c7 44 24 04 86 00 00 	movl   $0x86,0x4(%esp)
+c0101328:	c7 44 24 04 87 00 00 	movl   $0x87,0x4(%esp)
 c010132f:	00 
 c0101330:	c7 04 24 47 3c 10 c0 	movl   $0xc0103c47,(%esp)
 c0101337:	e8 8d f9 ff ff       	call   c0100cc9 <_paddr>
@@ -5025,12 +5026,12 @@ c0102b37:	c3                   	ret
 
 c0102b38 <sleep>:
 
-int sleep(int sec)
+void sleep(int sec)
 {
 c0102b38:	55                   	push   %ebp
 c0102b39:	89 e5                	mov    %esp,%ebp
 c0102b3b:	83 ec 18             	sub    $0x18,%esp
-	return syscall(SYS_sleep,sec);
+	syscall(SYS_sleep,sec);
 c0102b3e:	8b 45 08             	mov    0x8(%ebp),%eax
 c0102b41:	89 44 24 04          	mov    %eax,0x4(%esp)
 c0102b45:	c7 04 24 08 00 00 00 	movl   $0x8,(%esp)

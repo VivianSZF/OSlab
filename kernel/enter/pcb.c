@@ -47,20 +47,21 @@ PCB* pcb_alloc()
 	struct Page *pp = page_alloc(ALLOC_ZERO);
 	if (pp == NULL) return NULL;
 	p->pgdir = page2kva(pp);
-	memcpy(p->pgdir,kern_pgdir,PGSIZE);
+	//memcpy(p->pgdir,kern_pgdir,PGSIZE);
 	pp->pp_ref ++;
 	p->ppid=0;
 	p->pid=cntpid++;
 	p->state=RUNNING;
 	list_del(&p->plist);
 	list_add_before(&ready,&p->plist);
+	memcpy(p->pgdir,kern_pgdir,PGSIZE);
 
 	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);	//??
 	tf->ds = USEL(SEG_USER_DATA);
 	tf->es = USEL(SEG_USER_DATA);
 	tf->ss = USEL(SEG_USER_DATA);
 	tf->cs = USEL(SEG_USER_CODE);
-	tf->esp = USTACKTOP;
+	tf->esp = USTACKTOP-8;
 	tf->eflags = 0x2 | FL_IF;
 	p->tf=tf;
 

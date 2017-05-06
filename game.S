@@ -5,9 +5,9 @@ game.bin:     file format elf32-i386
 Disassembly of section .text:
 
 08048000 <game_init>:
-extern void init_timer();
-extern void init_idt();
-extern void init_intr();
+extern void exit(int suc);
+extern void sleep(int sec); 
+
 
 void
 game_init(void) {
@@ -1756,12 +1756,12 @@ void exit(int suc)
 
 08048f52 <sleep>:
 
-int sleep(int sec)
+void sleep(int sec)
 {
  8048f52:	55                   	push   %ebp
  8048f53:	89 e5                	mov    %esp,%ebp
  8048f55:	83 ec 18             	sub    $0x18,%esp
-	return syscall(SYS_sleep,sec);
+	syscall(SYS_sleep,sec);
  8048f58:	8b 45 08             	mov    0x8(%ebp),%eax
  8048f5b:	89 44 24 04          	mov    %eax,0x4(%esp)
  8048f5f:	c7 04 24 08 00 00 00 	movl   $0x8,(%esp)

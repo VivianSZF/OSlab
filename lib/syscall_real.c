@@ -52,7 +52,7 @@ void exit(int suc)
 	syscall(SYS_exit,suc);
 }
 
-int sleep(int sec)
+void sleep(int sec)
 {
-	return syscall(SYS_sleep,sec);
+	syscall(SYS_sleep,sec);
 }
