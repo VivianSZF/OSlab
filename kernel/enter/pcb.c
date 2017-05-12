@@ -154,10 +154,10 @@ PCB* pcb_deepcopy(PCB *fa,PCB *tb)
 	tb->state=fa->state;
 	tb->timecount=fa->timecount;
 	tb->sleeptime=fa->sleeptime;
-	pgdir_copy(fa->pgdir,tb->pgdir);//written in pmap.c
+	pg_copy(fa->pgdir,tb->pgdir);//written in pmap.c
 }
 
 void pcb_remove(PCB *p)
 {
-	pgdir_remove(p->pgdir);
+	pg_remove(p->pgdir);
 }

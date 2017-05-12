@@ -32,7 +32,7 @@ void main_loop(void) {
 	pl.y=150;
 	pl.w=10;
 	pl.v=10;
-	
+	int k=0;
 	while (TRUE) {
 	
 		key_operation();
@@ -72,5 +72,22 @@ void main_loop(void) {
 			num_draw ++;
 			redraw_screen();
 		}
+
+		if(k==0){        //for test
+			fork();
+			k=1;
+			printf("%d\n",getpid());
+		}
+		else if(k%10==0)
+		{
+			sleep(1);
+			k++;
+		}
+		else if(k%100==0)
+		{
+			exit(0);
+		}
+		else
+			k++;
 	}
 }

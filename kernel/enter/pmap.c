@@ -180,7 +180,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 }
 
 void 
-pgdir_copy(pde_t *src, pde_t *dst)
+pg_copy(pde_t *src, pde_t *dst)
 {
 	struct Page *p;
 	int pdx, ptx;
@@ -205,7 +205,7 @@ pgdir_copy(pde_t *src, pde_t *dst)
 	}
 }
 void 
-pgdir_remove(pde_t *pgdir)
+pg_remove(pde_t *pgdir)
 {
 	int pdx,ptx;
 	for (pdx=0; pdx<1024;pdx++) {
