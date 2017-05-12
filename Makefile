@@ -21,7 +21,7 @@ CFLAGS += -ggdb3 #GDB调试信息
 
 QEMU_OPTIONS := -serial stdio #以标准输入输为串�?COM1)
 #QEMU_OPTIONS += -d int #输出中断信息
-QEMU_OPTIONS += -monitor telnet:127.0.0.1:1111,server,nowait #telnet monitor
+#QEMU_OPTIONS += -monitor telnet:127.0.0.1:1111,server,nowait #telnet monitor
 
 QEMU_DEBUG_OPTIONS := -S #启动不执�?
 QEMU_DEBUG_OPTIONS += -s #GDB调试服务�? 127.0.0.1:1234

@@ -21,18 +21,25 @@ game_init(void) {
 	printf("game start!\n");
 	//init_keyboard();
 	//main_loop();
+        //fork();
+	//exit(0);
+	//sleep(1);
+	//printf("skskkssks");
+	//while(1);
 	if(fork()==0){
 		while(1){
-			printf("ping.\n");
+			printf("ping\n");
 			sleep(1);
 		}
 	}
 	else{
 		while(1){
-			printf("pong.\n");
+			printf("pong\n");
 			sleep(2);
+			printf("qweqwe");
 		}
 	}
+	
 	exit(0);
 	assert(0); /* main_loop是死循环，永远无法返回这�?*/
 }

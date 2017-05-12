@@ -7,9 +7,10 @@
 
 //extern TSS tss;
 void schedule(){
-	list *one;
-	list *head=&block;
-	for(one=head->next;one!=head;one=one->next){
+	list *one,*ne;
+	list *bl=&block;
+	//printk("Oh,Shit!!!");
+	for(one=bl->next,ne=one->next;one!=bl;one=ne,ne=ne->next){
 		PCB *p=list_entry(one,PCB,plist);
 		p->timecount--;
 		if(p->timecount==0){
@@ -24,9 +25,10 @@ void schedule(){
 		else
 			now=now->next;
 		pcbnow=list_entry(now,PCB,plist);
-		uint32_t t=(uint32_t)((void*)pcbnow+STACKSIZE);
-		lcr3(PADDR(pcbnow->pgdir));
+		uint32_t t=(uint32_t)pcbnow+STACKSIZE-8;
 		set_tss_esp0(t);
+		lcr3(PADDR(pcbnow->pgdir));
+		
 	}
 	else{
 		pcbnow=&init;

@@ -26,8 +26,8 @@ void pcb_init()
 	list_init(&block);
 	list_init(&free);
 	now=&ready;
-	init.pgdir=kern_pgdir;
 	pcbnow=&init;
+	init.pgdir=kern_pgdir;
 	int i;
 	for(i=0;i<MAXN_PCB;i++){
 		list_add_before(&free,&pcb[i].plist);
@@ -43,7 +43,18 @@ PCB* pcb_alloc()
 	/*
 	PCB* p = pcb_free_list;
  	if (p == NULL) return NULL;*/
-	PCB* p=list_entry(free.next,PCB,plist);
+	list *lnext=&free;
+	list *freenext;
+	if(lnext->next==lnext)
+	{
+		freenext=NULL;
+		return NULL;
+	}
+	else
+	{
+		freenext=lnext->next;
+	}
+	PCB* p=list_entry(freenext,PCB,plist);
 	struct Page *pp = page_alloc(ALLOC_ZERO);
 	if (pp == NULL) return NULL;
 	p->pgdir = page2kva(pp);
@@ -55,8 +66,7 @@ PCB* pcb_alloc()
 	list_del(&p->plist);
 	list_add_before(&ready,&p->plist);
 	memcpy(p->pgdir,kern_pgdir,PGSIZE);
-
-	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);	//??
+	TrapFrame* tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);	
 	tf->ds = USEL(SEG_USER_DATA);
 	tf->es = USEL(SEG_USER_DATA);
 	tf->ss = USEL(SEG_USER_DATA);
@@ -64,7 +74,6 @@ PCB* pcb_alloc()
 	tf->esp = USTACKTOP-8;
 	tf->eflags = 0x2 | FL_IF;
 	p->tf=tf;
-
 	return p;
 
 }
@@ -75,7 +84,6 @@ void mm_malloc(pde_t *pgdir, uint32_t va, size_t len)
 	uint32_t va_start = ROUNDDOWN(va, PGSIZE);
 	uint32_t va_end = ROUNDUP(va+len, PGSIZE);
 	int i;
-
 	for (i = va_start; i < va_end; i += PGSIZE) {
 		p = page_alloc(0);
 		assert(p != NULL);
@@ -112,7 +120,7 @@ void readsect(void *dst, uint32_t offset)
 	insl(0x1F0, dst, SECT_SIZE / 4);
 }
 
-PCB* pcb_new()
+void pcb_new()
 {
 	PCB *p = pcb_alloc();
 	if (p == NULL) return NULL;
@@ -124,32 +132,32 @@ PCB* pcb_new()
 	ph = (struct Proghdr *)((uint8_t *)elf + elf -> e_phoff);
 	eph = ph + elf -> e_phnum;
 	lcr3(PADDR(p-> pgdir));
-	for (; ph < eph; ph++) {
-		if (ph -> p_type != ELF_PROG_LOAD) continue;
+	for (; ph < eph; ph++) 
+	{
+		if (ph -> p_type != ELF_PROG_LOAD) 
+			continue;
 		mm_malloc(p->pgdir, ph->p_va, ph->p_memsz);
 		readseg(ph->p_va, ph->p_filesz, GAME_OFFSET + ph->p_offset);
 		memset((void*)(ph->p_va+ph->p_filesz), 0, ph->p_memsz-ph->p_filesz);
 	}
-	(p->tf)->eip = elf -> e_entry;
-	mm_malloc(p->pgdir, USTACKTOP - USTACKSIZE, USTACKSIZE);
+	(p->tf)->eip = elf->e_entry;
+	mm_malloc(p->pgdir, USTACKTOP-USTACKSIZE, USTACKSIZE);
 	lcr3(PADDR(kern_pgdir));
-	return p;
 }
 
 PCB* pcb_deepcopy(PCB *fa,PCB *tb)
 {
-	int movaddr=(int)(&((PCB*)0)->addr);
+	int movaddr=(int)(&((PCB*)0)->addr);//get the addr for the information of process
 	int copysize=KSTACK_SIZE-movaddr;
 	memcpy(tb->kstack+movaddr,fa->kstack+movaddr,copysize);
-	tb->tf=fa->tf;//tb->kstack+(fa->tf-(void*)fa->kstack);
-	pgdir_copy(fa->pgdir,tb->pgdir);
+	tb->tf=tb->kstack+((void*)fa->tf-(void*)fa->kstack);
 	tb->state=fa->state;
 	tb->timecount=fa->timecount;
 	tb->sleeptime=fa->sleeptime;
+	pgdir_copy(fa->pgdir,tb->pgdir);//written in pmap.c
 }
 
 void pcb_remove(PCB *p)
 {
 	pgdir_remove(p->pgdir);
-	p->pgdir=NULL;
 }

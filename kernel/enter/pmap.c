@@ -88,7 +88,6 @@ page_init(void)
 		pages[i].pp_link = page_free_list;
 		page_free_list = &pages[i];
 	}
-	boot_map_region(kern_pgdir, KSTACKTOP-KSTKSIZE, KSTKSIZE, PADDR(bootstack), (PTE_W | PTE_P));
 	boot_map_region(kern_pgdir, (uintptr_t)VMEM_ADDR, ROUNDUP(SCR_SIZE, PGSIZE), (physaddr_t)VMEM_ADDR, (PTE_W | PTE_P));
 }
 
@@ -180,46 +179,51 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 
 }
 
-void pgdir_copy(pde_t *src, pde_t *dst)
+void 
+pgdir_copy(pde_t *src, pde_t *dst)
 {
-	struct Page *pp;
+	struct Page *p;
 	int pdx, ptx;
-	for (pdx = 0; pdx < 1024; pdx++) {
-		if (src[pdx] & PTE_P) {	
-			if (dst[pdx] & PTE_P) continue;
-			pte_t *src_table = KADDR(PTE_ADDR(src[pdx]));
-			pp = page_alloc(ALLOC_ZERO);
-			pp->pp_ref ++;
-			dst[pdx] = page2pa(pp) | (src[pdx]&0xFFF);
-			pte_t *dst_table = KADDR(dst[pdx]&0xFFF);
-			for (ptx = 0; ptx < 1024; ptx++) { 
-				if (src_table[ptx] & PTE_P) { 
-					pp = page_alloc(0);
-					pp->pp_ref ++;
-					dst_table[ptx] = page2pa(pp) | (src_table[ptx]&0xFFF);
-					memcpy(page2kva(pp), KADDR(PTE_ADDR(src_table[ptx])), PGSIZE);
+	for (pdx=0;pdx<1024;pdx++){
+		if (src[pdx]&PTE_P){	
+			if (dst[pdx]&PTE_P) 
+				continue;
+			pte_t *src_table=KADDR(PTE_ADDR(src[pdx]));
+			p = page_alloc(ALLOC_ZERO);
+			p->pp_ref ++;
+			dst[pdx]=page2pa(p)|(src[pdx]&0xFFF);
+			pte_t *dst_table=KADDR(PTE_ADDR(dst[pdx]));
+			for (ptx=0;ptx<NPTENTRIES;ptx++){ 
+				if (src_table[ptx]&PTE_P){ 
+					p = page_alloc(0);
+					p->pp_ref++;
+					dst_table[ptx] = page2pa(p)|(src_table[ptx]&0xFFF);
+					memcpy(page2kva(p), KADDR(PTE_ADDR(src_table[ptx])), PGSIZE);
 				}
 			}
 		}
 	}
 }
-void pgdir_remove(pde_t *pgdir)
+void 
+pgdir_remove(pde_t *pgdir)
 {
-	int pdx, ptx;
-	for (pdx = 0; pdx < 1024; pdx++) {
-		if (pgdir[pdx] & PTE_P) {
-			if (kern_pgdir[pdx] & PTE_P) continue;
-			pte_t *pgtable = KADDR(PTE_ADDR(pgdir[pdx]));
-			for (ptx = 0; ptx < NPTENTRIES; ++ptx) {
-				if (pgtable[ptx] & PTE_P) {
+	int pdx,ptx;
+	for (pdx=0; pdx<1024;pdx++) {
+		if (pgdir[pdx]&PTE_P) {
+			if (kern_pgdir[pdx]&PTE_P) 
+				continue;
+			pte_t *pgtable =KADDR(PTE_ADDR(pgdir[pdx]));
+			for (ptx=0; ptx<NPTENTRIES;ptx++){
+				if (pgtable[ptx]&PTE_P){
 					page_decref(pa2page(PTE_ADDR(pgtable[ptx])));
 				}
 			}
 			page_decref(pa2page(PTE_ADDR(pgdir[pdx])));
-			pgdir[pdx] = 0;
+			pgdir[pdx]=0;
 		}
 	}
 	page_decref(pa2page(PADDR(pgdir)));
+	pgdir=NULL;
 }
 
 
@@ -353,5 +357,4 @@ tlb_invalidate(pde_t *pgdir, void *va)
 	// For now, there is only one address space, so always invalidate.
 	invlpg(va);
 }
-
 

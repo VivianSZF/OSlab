@@ -11,6 +11,7 @@ void sys_exit(int suc);
 void sys_sleep(int time);
 
 void do_syscall(struct TrapFrame *tf) {
+	printk("%d\n",tf->eax);
 	switch(tf->eax) {
 		case SYS_printf:  
 			tf->eax=sys_pr((void*)tf->ebx);
