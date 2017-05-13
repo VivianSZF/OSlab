@@ -863,7 +863,8 @@ void main_loop(void) {
 			redraw_screen();
  80486fe:	e8 76 fc ff ff       	call   8048379 <redraw_screen>
 		}
-		if(k==0){
+
+		if(k==0){        //for test
  8048703:	83 7d e8 00          	cmpl   $0x0,-0x18(%ebp)
  8048707:	75 23                	jne    804872c <main_loop+0x1a7>
 			fork();
