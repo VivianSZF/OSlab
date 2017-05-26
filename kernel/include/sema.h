@@ -4,11 +4,8 @@
 #include "list.h"
 
 typedef struct Sema{
-	char name[20];
-	int value;
-	int plink;
-	bool bin;
-	list slist;
+	int count;
+	
 }Sema;
 
 Sema sema[1000];

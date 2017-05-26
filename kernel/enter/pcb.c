@@ -61,7 +61,7 @@ PCB* pcb_alloc()
 	//memcpy(p->pgdir,kern_pgdir,PGSIZE);
 	pp->pp_ref ++;
 	p->ppid=0;
-	p->pid=cntpid++;
+c	p->pid=cntpid++;
 	p->state=RUNNING;
 	list_del(&p->plist);
 	list_add_before(&ready,&p->plist);
@@ -145,7 +145,7 @@ void pcb_new()
 	lcr3(PADDR(kern_pgdir));
 }
 
-PCB* pcb_deepcopy(PCB *fa,PCB *tb)
+void pcb_deepcopy(PCB *fa,PCB *tb)
 {
 	int movaddr=(int)(&((PCB*)0)->addr);//get the addr for the information of process
 	int copysize=KSTACK_SIZE-movaddr;
@@ -157,7 +157,38 @@ PCB* pcb_deepcopy(PCB *fa,PCB *tb)
 	pg_copy(fa->pgdir,tb->pgdir);//written in pmap.c
 }
 
+void pcb_shallowcopy(PCB *fa,PCB *tb)
+{
+	int movaddr(int)(&((PCB*)0)->addr);
+	int copysize=KSTACK_SIZE-movaddr;
+	memcpy(tb->kstack+movaddr,fa->kstack+movaddr,copysize);
+	tb->tf=tb->kstack+((void*)fa->tf-(void*)fa->kstack);
+	tb->state=fa->state;
+	tb->timecount=fa->timecount;
+	tb->sleeptime=fa->sleeptime;
+	pg_scopy(fa->pgdir,tb->pgdir);	
+}
+
 void pcb_remove(PCB *p)
 {
 	pg_remove(p->pgdir);
 }
+
+int thread(void *addr)
+{
+	PCB *p=pcb_alloc();
+	pcb_shallowcopy(pcbnow,p);
+	mm_malloc(p->pgdir,USTACKTOP-USTACKSIZE,USTACKSIZE);
+	int *temp=(int*)(USTACKTOP-8);
+	*temp=0x0;
+	TrapFrame *tf=(TrapFrame*)((uint32_t)p->kstack+STACKSIZE-sizeof(TrapFrame)-8);
+	tf->eip=(uint32_t)addr;
+	tf->esp=USTACKTOP-12;
+	return 0;
+}
+
+
+
+
+
+
