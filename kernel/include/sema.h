@@ -4,8 +4,9 @@
 #include "list.h"
 
 typedef struct Sema{
-	int count;
-	
+	int value;
+	int link;
+	list slist;
 }Sema;
 
 Sema sema[1000];

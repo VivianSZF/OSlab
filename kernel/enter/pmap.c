@@ -200,6 +200,31 @@ pg_copy(pde_t *fa, pde_t *tb)
 		}
 	}
 }
+
+void 
+pg_scopy(pde_t *fa, pde_t *tb)
+{
+	int i, j;
+	for (i=0;i<1024;i++){
+		if (fa[i]&PTE_P){	
+			if (tb[i]&PTE_P) 
+				continue;
+			pte_t *fat=KADDR(PTE_ADDR(fa[i]));
+			struct Page *p = page_alloc(ALLOC_ZERO);
+			p->pp_ref ++;
+			tb[i]=page2pa(p)|(fa[i]&0xFFF);
+			pte_t *tbt=KADDR(PTE_ADDR(tb[i]));
+			for (j=0;j<NPTENTRIES;j++){ 
+				if (fat[j]&PTE_P){ 
+					p=pa2page(PTE_ADDR(fat[j]));
+					p->pp_ref++;
+					tbt[j] = fat[j];
+				}
+			}
+		}
+	}
+}
+
 void 
 pg_remove(pde_t *pgdir)
 {
