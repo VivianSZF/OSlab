@@ -23,6 +23,7 @@ typedef union ProcessControlBlock {
 		int state;
 		int timecount;
 		int sleeptime;
+		list slist;
 		void *addr;
 	};
 	//struct ProcessControlBlock *pcbo;

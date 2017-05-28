@@ -6,8 +6,7 @@
 typedef struct Sema{
 	int value;
 	int link;
-	list slist;
+	list wait;
 }Sema;
 
-Sema sema[1000];
 
