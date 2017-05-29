@@ -41,7 +41,6 @@ asm_do_irq:
 	call irq_handle
 	movl pcbnow,%eax
 	movl (%eax),%esp
-	#addl $4, %esp
 
 	popal
 	popl %gs

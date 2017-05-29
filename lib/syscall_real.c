@@ -3,6 +3,7 @@
 #include "types.h"
 #include "string.h"
 #include "video.h"
+#include "sema.h"
 
 static uint8_t buff[SCR_SIZE];
 
@@ -65,4 +66,34 @@ void sleep(int sec)
 	//printf("9");	
 	syscall(SYS_sleep,sec);
 	//printf("qweqwe");
+}
+
+int thread(void *addr)
+{
+	return syscall(SYS_thread,addr);
+}
+
+int sem_init(Sema* sema)
+{
+	return syscall(SYS_sem_init,sema);
+}
+
+int sem_destroy(Sema* sema)
+{
+	return syscall(SYS_sem_destroy,sema);
+}
+
+int sem_wait(Sema* sema)
+{
+	return syscall(SYS_sem_wait,sema);
+}
+
+int sem_trywait(Sema *sema)
+{
+	return syscall(SYS_sem_trywait,sema);
+}
+
+int sem_post(Sema *sema)
+{
+	return syscall(SYS_sem_post,sema);
 }

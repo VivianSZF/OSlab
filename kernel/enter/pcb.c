@@ -61,7 +61,7 @@ PCB* pcb_alloc()
 	//memcpy(p->pgdir,kern_pgdir,PGSIZE);
 	pp->pp_ref ++;
 	p->ppid=0;
-c	p->pid=cntpid++;
+	p->pid=cntpid++;
 	p->state=RUNNING;
 	list_del(&p->plist);
 	list_add_before(&ready,&p->plist);
@@ -159,7 +159,7 @@ void pcb_deepcopy(PCB *fa,PCB *tb)
 
 void pcb_shallowcopy(PCB *fa,PCB *tb)
 {
-	int movaddr(int)(&((PCB*)0)->addr);
+	int movaddr=(int)(&((PCB*)0)->addr);
 	int copysize=KSTACK_SIZE-movaddr;
 	memcpy(tb->kstack+movaddr,fa->kstack+movaddr,copysize);
 	tb->tf=tb->kstack+((void*)fa->tf-(void*)fa->kstack);
@@ -174,7 +174,7 @@ void pcb_remove(PCB *p)
 	pg_remove(p->pgdir);
 }
 
-int thread(void *addr)
+int kthread(void *addr)
 {
 	PCB *p=pcb_alloc();
 	pcb_shallowcopy(pcbnow,p);

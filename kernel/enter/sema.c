@@ -2,25 +2,30 @@
 #include "x86.h"
 #include "common.h"
 #include "list.h"
+#include "pcb.h"
 
-
-int sem_init(Sema *sema,int value)
+int ksem_init(Sema *sema,int value)
 {
 	sema->value=value;
 	sema->link=0;
-//	list_add_before(&sem_wait,&sema->slist);
 	return 0;
 }
 
-int sem_destroy(Sema *sema)
+int ksem_destroy(Sema *sema)
 {
 	sema->value=-1;
 	sema->link=0;
+	list *one;
+	list_foreach(one,&sema->wait)
+	{
+		list_del(one);
+		list_add_before(&ready,one);	
+	}
 	list_del(&sema->wait);
 	return 0;
 }
 
-int sem_wait(Sema *sema)
+int ksem_wait(Sema *sema)
 {
 	if(sema->value>0)
 	{
@@ -29,13 +34,13 @@ int sem_wait(Sema *sema)
 	}
 	else{
 		list_del(&pcbnow->slist);
-		list_add_before(&sema->wait,&pcbnow->slist);
+		list_add_before(&sema->wait,&pcbnow);
 		schedule();
 	}
 	return -1;
 }
 
-int sem_trywait(Sema *sema)
+int ksem_trywait(Sema *sema)
 {
 	if(sema->value>0)
 	{
@@ -47,15 +52,16 @@ int sem_trywait(Sema *sema)
 	}
 }
 
-int sem_post(Sema *sema)
+int ksem_post(Sema *sema)
 {
 	if(list_empty(&sema->wait)){
 		sema->value++;
 	}
 	else{
-		list *one=(sema->wait)->next;
+		list *one=sema->wait.next;
 		list_del(one);
 		list_add_before(&ready,one);
+		schedule();
 	}
 }
 
