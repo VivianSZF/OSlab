@@ -40,9 +40,6 @@ void pcb_init()
 static uint32_t cntpid=0;
 PCB* pcb_alloc()
 {
-	/*
-	PCB* p = pcb_free_list;
- 	if (p == NULL) return NULL;*/
 	list *lnext=&free;
 	list *freenext;
 	if(lnext->next==lnext)

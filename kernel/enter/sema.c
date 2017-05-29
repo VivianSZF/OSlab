@@ -6,8 +6,10 @@
 
 int ksem_init(Sema *sema,int value)
 {
+	//printk("%d\n",value);
 	sema->value=value;
 	sema->link=0;
+	list_init(&sema->wait);
 	return 0;
 }
 
@@ -33,9 +35,11 @@ int ksem_wait(Sema *sema)
 		return 0;
 	}
 	else{
-		list_del(&pcbnow->slist);
-		list_add_before(&sema->wait,&pcbnow);
-		schedule();
+		sema->value--;
+		list *it = now;
+		list_del(it);
+		schedule(0);
+		list_add_before(&sema->wait,it);
 	}
 	return -1;
 }
@@ -58,10 +62,11 @@ int ksem_post(Sema *sema)
 		sema->value++;
 	}
 	else{
+		sema->value++;
 		list *one=sema->wait.next;
 		list_del(one);
 		list_add_before(&ready,one);
-		schedule();
+		schedule(0);
 	}
 }
 

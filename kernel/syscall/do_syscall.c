@@ -49,7 +49,8 @@ void do_syscall(struct TrapFrame *tf) {
 			tf->eax=kthread((void*)tf->ebx);
 			break;
 		case SYS_sem_init:
-			tf->eax=ksem_init((Sema*)tf->ebx,tf->ecx);
+			tf->eax=ksem_init((void*)tf->ebx,tf->ecx);
+			//printk("131231412\n");
 			break;
 		case SYS_sem_destroy:
 			tf->eax=ksem_destroy((Sema*)tf->ebx);

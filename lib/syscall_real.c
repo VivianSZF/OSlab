@@ -73,17 +73,17 @@ int thread(void *addr)
 	return syscall(SYS_thread,addr);
 }
 
-int sem_init(Sema* sema)
+int sem_init(Sema *sema,int value)
 {
-	return syscall(SYS_sem_init,sema);
+	return syscall(SYS_sem_init,sema,value);
 }
 
-int sem_destroy(Sema* sema)
+int sem_destroy(Sema *sema)
 {
 	return syscall(SYS_sem_destroy,sema);
 }
 
-int sem_wait(Sema* sema)
+int sem_wait(Sema *sema)
 {
 	return syscall(SYS_sem_wait,sema);
 }

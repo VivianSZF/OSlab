@@ -6,16 +6,18 @@
 #include "memlayout.h"
 
 //extern TSS tss;
-void schedule(){
-	list *one,*ne;
-	list *bl=&block;
-	//printk("Oh,Shit!!!");
-	for(one=bl->next,ne=one->next;one!=bl;one=ne,ne=ne->next){
-		PCB *p=list_entry(one,PCB,plist);
-		p->timecount--;
-		if(p->timecount==0){
-			list_del(one);
-			list_add_before(&ready,one);
+void schedule(int pan){
+	if(pan==1){
+		list *one,*ne;
+		list *bl=&block;
+		//printk("Oh,Shit!!!");
+		for(one=bl->next,ne=one->next;one!=bl;one=ne,ne=ne->next){
+			PCB *p=list_entry(one,PCB,plist);
+			p->timecount--;
+			if(p->timecount==0){
+				list_del(one);
+				list_add_before(&ready,one);
+			}
 		}
 	}
 	if(!list_empty(&ready)){
@@ -28,7 +30,6 @@ void schedule(){
 		uint32_t t=(uint32_t)pcbnow+STACKSIZE-8;
 		set_tss_esp0(t);
 		lcr3(PADDR(pcbnow->pgdir));
-		
 	}
 	else{
 		pcbnow=&init;
