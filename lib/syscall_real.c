@@ -55,10 +55,10 @@ int getpid(void)
 	return syscall(SYS_getpid);
 }
 
-void exit(int suc)
+void exit(void)
 {
 	//printf("8");
-	syscall(SYS_exit,suc);
+	syscall(SYS_exit);
 }
 
 void sleep(int sec)

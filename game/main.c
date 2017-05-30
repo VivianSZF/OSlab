@@ -12,7 +12,7 @@ extern void init_idt();
 extern void init_intr();
 extern int fork(void);
 extern int getpid(void);
-extern void exit(int suc);
+extern void exit(void);
 extern void sleep(int sec); 
 extern void thread(void *addr);
 extern int sem_init(Sema *sema,int value);
@@ -38,7 +38,7 @@ void producer()
 		sem_post(&mutex);
 		sem_post(&full);	
 	}	
-	exit(0);
+	exit();
 }
 
 void consumer()
@@ -53,7 +53,7 @@ void consumer()
 		sem_post(&mutex);
 		sem_post(&empty);
 	}
-	exit(0);
+	exit();
 }
 
 
@@ -64,25 +64,10 @@ game_init(void) {
 //	init_keyboard();
 //	main_loop();//add the syscall fork,sleep,getpid,exit in it(written in game.c)
         //fork();
-	//exit(0);
+	//exit();
 	//sleep(1);
 	//printf("skskkssks");
 	//while(1);
-	/*
-	if(fork()==0){                      //This can also be used to test the syscall.
-		while(1){
-			printf("ping\n");
-			sleep(1);
-		}
-	}
-	else{
-		while(1){
-			printf("pong\n");
-			sleep(2);
-			printf("qweqwe");
-		}
-	}
-	*/
 	
 	//here is the producer and consumer test
 	sem_init(&empty,5);
@@ -93,10 +78,10 @@ game_init(void) {
 	thread(producer);	
 	thread(consumer);
 
-	//sem_destroy(empty);
-	//sem_destroy(full);
-	//sem_destroy(mutex);
+	//sem_destroy(&empty);
+	//sem_destroy(&full);
+	//sem_destroy(&mutex);
 	while(1);
-	//exit(0);
+	exit();
 	assert(0); /* main_loop是死循环，永远无法返回这�?*/
 }

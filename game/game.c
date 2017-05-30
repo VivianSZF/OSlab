@@ -85,7 +85,7 @@ void main_loop(void) {
 		}
 		else if(k%100==0)
 		{
-			exit(0);
+			exit();
 		}
 		else
 			k++;

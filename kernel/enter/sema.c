@@ -15,7 +15,7 @@ int ksem_init(Sema *sema,int value)
 
 int ksem_destroy(Sema *sema)
 {
-	sema->value=-1;
+	sema->value=0;
 	sema->link=0;
 	list *one;
 	list_foreach(one,&sema->wait)
@@ -23,12 +23,13 @@ int ksem_destroy(Sema *sema)
 		list_del(one);
 		list_add_before(&ready,one);	
 	}
-	list_del(&sema->wait);
+	printk("destroy the semaphore\n");
 	return 0;
 }
 
 int ksem_wait(Sema *sema)
 {
+	sema->link++;
 	if(sema->value>0)
 	{
 		sema->value--;
@@ -46,6 +47,7 @@ int ksem_wait(Sema *sema)
 
 int ksem_trywait(Sema *sema)
 {
+	sema->link++;
 	if(sema->value>0)
 	{
 		sema->value--;
@@ -58,6 +60,7 @@ int ksem_trywait(Sema *sema)
 
 int ksem_post(Sema *sema)
 {
+	sema->link--;
 	if(list_empty(&sema->wait)){
 		sema->value++;
 	}

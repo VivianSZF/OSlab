@@ -177,7 +177,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 
 
 void 
-pg_copy(pde_t *fa, pde_t *tb)
+pg_copy(pde_t *fa, pde_t *tb, int pan)
 {
 	int i, j;
 	for (i=0;i<1024;i++){
@@ -191,34 +191,17 @@ pg_copy(pde_t *fa, pde_t *tb)
 			pte_t *tbt=KADDR(PTE_ADDR(tb[i]));
 			for (j=0;j<NPTENTRIES;j++){ 
 				if (fat[j]&PTE_P){ 
-					p = page_alloc(0);
-					p->pp_ref++;
-					tbt[j] = page2pa(p)|(fat[j]&0xFFF);
-					memcpy(page2kva(p), KADDR(PTE_ADDR(fat[j])), PGSIZE);
-				}
-			}
-		}
-	}
-}
-
-void 
-pg_scopy(pde_t *fa, pde_t *tb)
-{
-	int i, j;
-	for (i=0;i<1024;i++){
-		if (fa[i]&PTE_P){	
-			if (tb[i]&PTE_P) 
-				continue;
-			pte_t *fat=KADDR(PTE_ADDR(fa[i]));
-			struct Page *p = page_alloc(ALLOC_ZERO);
-			p->pp_ref ++;
-			tb[i]=page2pa(p)|(fa[i]&0xFFF);
-			pte_t *tbt=KADDR(PTE_ADDR(tb[i]));
-			for (j=0;j<NPTENTRIES;j++){ 
-				if (fat[j]&PTE_P){ 
-					p=pa2page(PTE_ADDR(fat[j]));
-					p->pp_ref++;
-					tbt[j] = fat[j];
+					if(pan==0){
+						p = page_alloc(0);
+						p->pp_ref++;
+						tbt[j] = page2pa(p)|(fat[j]&0xFFF);
+						memcpy(page2kva(p), KADDR(PTE_ADDR(fat[j])), PGSIZE);
+					}
+					else{
+						p=pa2page(PTE_ADDR(fat[j]));
+						p->pp_ref++;
+						tbt[j] = fat[j];
+					}
 				}
 			}
 		}

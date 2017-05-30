@@ -8,7 +8,7 @@ int sys_write(int,void*,int);
 int sys_time(void);
 void sys_fork(void);
 uint32_t sys_getpid(void);
-void sys_exit(int suc);
+void sys_exit(void);
 void sys_sleep(int time);
 int kthread(void *addr);
 int ksem_init(Sema *sema,int value);
@@ -40,7 +40,7 @@ void do_syscall(struct TrapFrame *tf) {
 			tf->eax=sys_getpid();
 			break;
 		case SYS_exit:
-			sys_exit(tf->ebx);
+			sys_exit();
 			break;
 		case SYS_sleep:
 			sys_sleep(tf->ebx);

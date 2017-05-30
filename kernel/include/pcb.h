@@ -11,7 +11,8 @@
 #define RUNNING 1
 #define BLOCKED 2
 #define DEAD 3
-
+#define DEEP 0
+#define SHALLOW 1
 
 typedef union ProcessControlBlock {
 	uint8_t kstack[KSTACK_SIZE];
