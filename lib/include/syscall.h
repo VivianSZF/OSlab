@@ -17,6 +17,6 @@ int syscall(int, ...);
 #define SYS_sem_wait 12
 #define SYS_sem_trywait 13
 #define SYS_sem_post 14
-
+#define SYS_thread_join 15
 
 #endif

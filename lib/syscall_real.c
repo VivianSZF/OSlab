@@ -97,3 +97,8 @@ int sem_post(Sema *sema)
 {
 	return syscall(SYS_sem_post,sema);
 }
+
+int thread_join(void)
+{
+	return syscall(SYS_thread_join);
+} 

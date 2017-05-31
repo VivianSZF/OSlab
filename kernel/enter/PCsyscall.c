@@ -91,3 +91,11 @@ int kthread(void *addr)
 	tf->esp=USTACKTOP-12;
 	return 0;
 }
+
+int kthread_join()
+{
+	if(list_empty(&ready)&&list_empty(&block))
+		return 1;
+	else
+		return 0;			
+}

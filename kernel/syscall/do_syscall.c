@@ -16,7 +16,7 @@ int ksem_destroy(Sema *sema);
 int ksem_wait(Sema *sema);
 int ksem_trywait(Sema *sema);
 int ksem_post(Sema *sema);
-
+int kthread_join(void);
 
 void do_syscall(struct TrapFrame *tf) {
 	//printk("%d\n",tf->eax);
@@ -63,6 +63,9 @@ void do_syscall(struct TrapFrame *tf) {
 			break;
 		case SYS_sem_post:
 			tf->eax=ksem_post((Sema*)tf->ebx);
+			break;
+		case SYS_thread_join:
+			tf->eax=kthread_join();
 			break;
 		default: panic("Unhandled system call: id = %d, eip = 0x%08x", tf->eax, tf->eip);
  	}

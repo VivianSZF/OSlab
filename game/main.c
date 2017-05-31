@@ -14,13 +14,13 @@ extern int fork(void);
 extern int getpid(void);
 extern void exit(void);
 extern void sleep(int sec); 
-extern void thread(void *addr);
+extern int thread(void *addr);
 extern int sem_init(Sema *sema,int value);
 extern int sem_destroy(Sema *sema);
 extern int sem_wait(Sema *sema);
 extern int sem_trywait(Sema *sema);
 extern int sem_post(Sema *sema);
-
+extern int thread_join();
 
 Sema empty,full,mutex;
 int buf[10];
@@ -29,12 +29,12 @@ void producer()
 {
 	printf("I am the producer\n");
 	int i;
-	for(i=0;i<10;i++)
+	for(i=0;i<100;i++)
 	{
 		sem_wait(&empty);
 		sem_wait(&mutex);
 		printf("produce No.%d\n",i);
-		buf[i]=i;
+		buf[i%10]=i;
 		sem_post(&mutex);
 		sem_post(&full);	
 	}	
@@ -45,11 +45,12 @@ void consumer()
 {
 	printf("I am the consumer\n");
 	int i;
-	for(i=0;i<10;i++)
+	for(i=0;i<100;i++)
 	{
 		sem_wait(&full);
 		sem_wait(&mutex);
 		printf("consume No.%d\n",i);
+		buf[i%10]=0;
 		sem_post(&mutex);
 		sem_post(&empty);
 	}
@@ -70,17 +71,26 @@ game_init(void) {
 	//while(1);
 	
 	//here is the producer and consumer test
-	sem_init(&empty,5);
+	sem_init(&empty,10);
 	//printf("dead here");
 	sem_init(&full,0);
 	sem_init(&mutex,1);
-	
-	thread(producer);	
-	thread(consumer);
 
-	//sem_destroy(&empty);
-	//sem_destroy(&full);
-	//sem_destroy(&mutex);
+	int k1,k2;
+	k1=thread(producer);	
+	k2=thread(consumer);
+	
+	int t=0;
+	while(1){
+		t=thread_join();
+		if(t==1)
+			break;
+	}
+
+	sem_destroy(&empty);
+	sem_destroy(&full);
+	sem_destroy(&mutex);
+		
 	while(1);
 	exit();
 	assert(0); /* main_loop是死循环，永远无法返回这�?*/
